@@ -18,6 +18,7 @@ import game.screen.ScreenRect;
 import game.sound.AudioEngine;
 import kuusisto.tinysound.Music;
 import verticalScroller.enemies.Enemy;
+import verticalScroller.enemies.EnemySpawner;
 import verticalScroller.ships.Ship;
 import verticalScroller.ships.ShipFactory;
 
@@ -85,11 +86,15 @@ public class VerticalScroller implements GameInitializer {
 		
 		AudioEngine.setAudioListener(ship);
 		
-		Enemy e1 = new Enemy(200, 100, shipSheet.getSprite(16, 13));
+		EnemySpawner spawner = new EnemySpawner(new Rectangle(0, 0, 400, 200), shipSheet.getSprite(16, 13));
+		
+		Game.gameObjectHandler.addGameObject(spawner);
+		
+		/*Enemy e1 = new Enemy(200, 100, shipSheet.getSprite(16, 13));
 		
 		e1.setScale(2);
 		
-		Game.gameObjectHandler.addGameObject(e1, "Enemy_1");
+		Game.gameObjectHandler.addGameObject(e1, "Enemy_1");*/
 		
 		/*
 		try {

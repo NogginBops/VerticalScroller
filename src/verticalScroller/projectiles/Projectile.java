@@ -5,10 +5,11 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import game.Game;
+import game.gameObject.GameObject;
 import game.gameObject.graphics.Paintable;
 import game.gameObject.physics.BasicMovable;
 import game.gameObject.physics.Collidable;
-import verticalScroller.ships.Ship;
+import verticalScroller.destroyable.Destroyable;
 
 /**
  * @author Julius Häger
@@ -16,7 +17,11 @@ import verticalScroller.ships.Ship;
  */
 public abstract class Projectile extends BasicMovable implements Collidable, Paintable {
 
+	protected GameObject shooter;
+	
 	protected BufferedImage sprite;
+	
+	protected float damage = 1;
 	
 	protected float lifetime;
 	
@@ -28,8 +33,9 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	 * @param image
 	 * @param lifetime
 	 */
-	public Projectile(float x, float y, BufferedImage image, float lifetime) {
+	public Projectile(GameObject shooter, float x, float y, BufferedImage image, float lifetime) {
 		super(x, y, image.getWidth(), image.getHeight(), 5);
+		this.shooter = shooter;
 		sprite = image;
 		this.lifetime = lifetime;
 		timer = 0;
@@ -58,7 +64,11 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 
 	@Override
 	public void hasCollided(Collidable collisionObject) {
-		if(!(collisionObject instanceof Ship)){
+		if(collisionObject == shooter){
+			return;
+		}
+		if(collisionObject instanceof Destroyable){
+			((Destroyable)collisionObject).damage(damage);
 			Game.gameObjectHandler.removeGameObject(this);
 		}
 	}

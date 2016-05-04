@@ -11,19 +11,19 @@ import java.io.IOException;
 import game.Game;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
-import game.gameObject.graphics.Sprite;
 import game.gameObject.physics.Collidable;
 import game.input.keys.KeyListener;
 import game.sound.AudioEngine;
 import game.sound.AudioSource;
 import kuusisto.tinysound.Sound;
+import verticalScroller.destroyable.DestroyableSprite;
 import verticalScroller.projectiles.BasicProjectile;
 
 /**
  * @author Julius Häger
  *
  */
-public class Ship extends Sprite implements Collidable, KeyListener{
+public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	//FIXME: Issue where the same image gets set every frame
 	
@@ -130,7 +130,7 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 		if(isSpaceDown){
 			if(timer > delay){
 				//TODO: Pool projectiles?
-				BasicProjectile projectileGO = new BasicProjectile(projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -350);
+				BasicProjectile projectileGO = new BasicProjectile(this, projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -350);
 				Game.gameObjectHandler.addGameObject(projectileGO);
 				
 				source.setLocation(new Point2D.Float(projectileGO.getX(), projectileGO.getY()));
@@ -229,5 +229,10 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
 		return true;
+	}
+
+	@Override
+	public void destroy() {
+		Game.gameObjectHandler.removeGameObject(this);
 	}
 }

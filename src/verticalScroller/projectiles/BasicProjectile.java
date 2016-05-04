@@ -3,6 +3,7 @@ package verticalScroller.projectiles;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import game.gameObject.GameObject;
 import verticalScroller.projectiles.Projectile;
 
 /**
@@ -19,8 +20,8 @@ public class BasicProjectile extends Projectile {
 	 * @param dx
 	 * @param dy
 	 */
-	public BasicProjectile(BufferedImage image, float lifetime, float x, float y, float dx, float dy) {
-		super(x, y, image, lifetime);
+	public BasicProjectile(GameObject shooter, BufferedImage image, float lifetime, float x, float y, float dx, float dy) {
+		super(shooter, x, y, image, lifetime);
 		setDX(dx);
 		setDY(dy);
 	}
