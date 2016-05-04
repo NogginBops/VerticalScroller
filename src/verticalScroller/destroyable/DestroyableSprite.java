@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import game.Game;
 import game.gameObject.graphics.Sprite;
 
 /**
@@ -15,7 +16,7 @@ public abstract class DestroyableSprite extends Sprite implements Destroyable {
 
 	//JAVADOC: DestroyableSprite
 	
-	protected float health = 10;
+	protected float health = 3;
 	
 	/**
 	 * 
@@ -92,5 +93,10 @@ public abstract class DestroyableSprite extends Sprite implements Destroyable {
 		if(health <= 0){
 			destroy();
 		}
+	}
+	
+	@Override
+	public void destroy() {
+		Game.gameObjectHandler.removeGameObject(this);
 	}
 }

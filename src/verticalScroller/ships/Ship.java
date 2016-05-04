@@ -1,6 +1,5 @@
 package verticalScroller.ships;
 
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
@@ -17,7 +16,9 @@ import game.sound.AudioEngine;
 import game.sound.AudioSource;
 import kuusisto.tinysound.Sound;
 import verticalScroller.destroyable.DestroyableSprite;
+import verticalScroller.events.PlayerDiedEvent;
 import verticalScroller.projectiles.BasicProjectile;
+import verticalScroller.projectiles.Projectile;
 
 /**
  * @author Julius Häger
@@ -31,15 +32,24 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	private Sound fireSFX;
 	
+	private Sound hitSFX;
+	
+	private Sound deathSFX;
+	
+	//TODO: On created method?
+	@SuppressWarnings("unused")
+	private Sound spawnSFX;
+	
 	private AudioSource source;
 	
 	private Rectangle movementBounds;
+	
+	private String name;
 	
 	private float movementSpeedHorizontal = 200;
 	private float movementSpeedVertical = 150;
 	
 	//TODO: Implement scale in Sprite
-	@SuppressWarnings("unused")
 	private float scale = 1;
 	
 	private float timer = 0;
@@ -49,6 +59,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	private boolean isSpaceDown = false;
 	
 	/**
+	 * @param name 
 	 * @param x 
 	 * @param y 
 	 * @param farLeft 
@@ -60,8 +71,9 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	 * @param image
 	 * @param scale 
 	 */
-	public Ship(float x, float y,  BufferedImage farLeft, BufferedImage left, BufferedImage center, BufferedImage right, BufferedImage farRight, BufferedImage projectile, float scale){
-		super(x, y, (int)(center.getWidth() * scale), (int)(center.getHeight() * scale));
+	public Ship(String name, float x, float y,  BufferedImage farLeft, BufferedImage left, BufferedImage center, BufferedImage right, BufferedImage farRight, BufferedImage projectile, float scale){
+		super(x, y, (int)(center.getWidth() * scale), (int)(center.getHeight() * scale), center);
+		this.name = name;
 		this.scale = scale;
 		this.farLeft = farLeft;
 		this.left = left;
@@ -70,15 +82,24 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		this.farRight = farRight;
 		this.projectile = projectile;
 		
+		health = 10;
+		
 		preloadSprites(farLeft, left, center, right, farRight);
 		
 		try {
-			fireSFX = IOHandler.load(new LoadRequest<Sound>("ship/fireSFX", new File(".\\res\\verticalScroller\\sounds\\fire.wav"), Sound.class, "DefaultSoundLoader")).result;
+			fireSFX = IOHandler.load(new LoadRequest<Sound>("ship/fireSFX", new File(".\\res\\verticalScroller\\sounds\\audio\\shoot.wav"), Sound.class, "DefaultSoundLoader")).result;
+			hitSFX = IOHandler.load(new LoadRequest<Sound>("ship/hitSFX", new File(".\\res\\verticalScroller\\sounds\\audio\\explosion.wav"), Sound.class, "DefaultSoundLoader")).result;
+			deathSFX = IOHandler.load(new LoadRequest<Sound>("ship/deathSFX", new File(".\\res\\verticalScroller\\sounds\\audio\\death.wav"), Sound.class, "DefaultSoundLoader")).result;
+			spawnSFX = IOHandler.load(new LoadRequest<Sound>("ship/spawnSFX", new File(".\\res\\verticalScroller\\sounds\\audio\\spawn.wav"), Sound.class, "DefaultSoundLoader")).result;
 			source = new AudioSource(0, 0, fireSFX);
 		} catch (IOException e) {
 			e.printStackTrace();
-			fireSFX = null;
 		}
+	}
+	
+	@Override
+	public Ship clone(){
+		return new Ship(name, x, y, farLeft, farLeft, center, right, farRight, projectile, scale);
 	}
 	
 	/**
@@ -97,9 +118,24 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		height = (int)(center.getHeight() * scale);
 		updateBounds();
 	}
-
+	
+	/**
+	 * @return
+	 */
+	public float getScale(){
+		return scale;
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getName(){
+		return name;
+	}
+	
 	@Override
-	public void paint(Graphics2D g2d) {
+	public void update(long timeNano) {
+		super.update(timeNano);
 		
 		//This should be done another way but is fine for now
 		//FIXME: setSprite
@@ -119,13 +155,6 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 			setSprite(center);
 		}
 		
-		super.paint(g2d);
-	}
-	
-	@Override
-	public void update(long timeNano) {
-		super.update(timeNano);
-		
 		timer += timeNano / 1000000000f;
 		if(isSpaceDown){
 			if(timer > delay){
@@ -134,6 +163,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 				Game.gameObjectHandler.addGameObject(projectileGO);
 				
 				source.setLocation(new Point2D.Float(projectileGO.getX(), projectileGO.getY()));
+				source.setSound(fireSFX);
 				AudioEngine.playSound(source);
 				
 				timer = 0;
@@ -186,7 +216,13 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	@Override
 	public void hasCollided(Collidable collisionObject) {
-		
+		if(collisionObject instanceof Projectile && ((Projectile)collisionObject).getShooter() != this){
+			source.setLocation(new Point2D.Float((float)collisionObject.getBounds().getCenterX(), (float)collisionObject.getBounds().getCenterY()));
+			source.setSound(hitSFX);
+			source.setVolume(2);
+			AudioEngine.playSound(source);
+			source.setVolume(1);
+		}
 	}
 	
 	@Override
@@ -204,7 +240,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		
 		isSpaceDown  = e.getKeyCode() == KeyEvent.VK_SPACE ? true : isSpaceDown;
 	}
-
+	
 	@Override
 	public void keyReleased(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
@@ -230,9 +266,14 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	public boolean shouldReceiveKeyboardInput() {
 		return true;
 	}
-
+	
 	@Override
 	public void destroy() {
-		Game.gameObjectHandler.removeGameObject(this);
+		super.destroy();
+		Game.eventMachine.fireEvent(new PlayerDiedEvent(this));
+		
+		source.setLocation(new Point2D.Float((float)bounds.getCenterX(), (float)bounds.getCenterY()));
+		source.setSound(deathSFX);
+		AudioEngine.playSound(source);
 	}
 }

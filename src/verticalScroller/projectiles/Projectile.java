@@ -15,19 +15,24 @@ import verticalScroller.destroyable.Destroyable;
  * @author Julius Häger
  *
  */
-public abstract class Projectile extends BasicMovable implements Collidable, Paintable {
-
+public abstract class Projectile extends BasicMovable implements Collidable, Paintable, Destroyable {
+	
+	//JAVADOC: Projectile
+	
 	protected GameObject shooter;
 	
 	protected BufferedImage sprite;
 	
 	protected float damage = 1;
 	
+	protected float health = damage;
+	
 	protected float lifetime;
 	
 	private float timer;
 	
 	/**
+	 * @param shooter 
 	 * @param x
 	 * @param y
 	 * @param image
@@ -39,6 +44,13 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 		sprite = image;
 		this.lifetime = lifetime;
 		timer = 0;
+	}
+	
+	/**
+	 * @return
+	 */
+	public GameObject getShooter(){
+		return shooter;
 	}
 	
 	@Override
@@ -64,12 +76,35 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 
 	@Override
 	public void hasCollided(Collidable collisionObject) {
-		if(collisionObject == shooter){
+		if(collisionObject.getClass() == shooter.getClass()){
 			return;
 		}
 		if(collisionObject instanceof Destroyable){
 			((Destroyable)collisionObject).damage(damage);
 			Game.gameObjectHandler.removeGameObject(this);
 		}
+	}
+
+	@Override
+	public float getHealth() {
+		return health;
+	}
+
+	@Override
+	public void setHealth(float health) {
+		this.health = health;
+	}
+
+	@Override
+	public void damage(float damage) {
+		health -= damage;
+		if(health <= 0){
+			destroy();
+		}
+	}
+
+	@Override
+	public void destroy() {
+		Game.gameObjectHandler.removeGameObject(this);
 	}
 }

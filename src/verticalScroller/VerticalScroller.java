@@ -12,26 +12,45 @@ import game.GameInitializer;
 import game.GameSettings;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
+import game.controller.event.EventListener;
+import game.controller.event.GameEvent;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.UniformSpriteSheet;
 import game.screen.ScreenRect;
 import game.sound.AudioEngine;
 import kuusisto.tinysound.Music;
-import verticalScroller.enemies.Enemy;
 import verticalScroller.enemies.EnemySpawner;
+import verticalScroller.events.PlayerDiedEvent;
 import verticalScroller.ships.Ship;
 import verticalScroller.ships.ShipFactory;
 
-public class VerticalScroller implements GameInitializer {
+/**
+ * @author Julius Häger
+ *
+ */
+public class VerticalScroller implements GameInitializer, EventListener {
 
+	//JAVADOC: VerticalScroller
+	
+	private UniformSpriteSheet shipSheet;
+	
+	private UniformSpriteSheet projectileSheet;
+	
+	private Camera camera;
+	
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		GameSettings settings = GameSettings.DEFAULT;
 		
 		settings.putSetting("Name", "VerticalScroller");
 		
-		settings.putSetting("OnScreenDebug", true);
+		settings.putSetting("OnScreenDebug", false);
 		
-		settings.putSetting("Debug", false);
+		settings.putSetting("DebugID", false);
+		
+		settings.putSetting("DebugLog", false);
 		
 		Dimension res = new Dimension(400, 600);
 		
@@ -60,9 +79,9 @@ public class VerticalScroller implements GameInitializer {
 			e.printStackTrace();
 		}
 		
-		UniformSpriteSheet shipSheet = new UniformSpriteSheet(shipSheetImage, 12, 14, new Color(191, 220, 191));
+		shipSheet = new UniformSpriteSheet(shipSheetImage, 12, 14, new Color(191, 220, 191));
 		
-		UniformSpriteSheet projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
+		projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
 		
 		Game.log.logMessage("Horizontal tiles: " + shipSheet.getHorizontalTiles() + " Vertical tiles: " + shipSheet.getVerticalTiles(), "VerticalScroller");
 		
@@ -76,7 +95,7 @@ public class VerticalScroller implements GameInitializer {
 		
 		Ship ship = ShipFactory.getShip("Standard");
 		
-		Camera camera = settings.getSettingAs("MainCamera", Camera.class);
+		camera = settings.getSettingAs("MainCamera", Camera.class);
 		
 		ship.setMovmentBounds(camera.getBounds());
 		
@@ -86,15 +105,11 @@ public class VerticalScroller implements GameInitializer {
 		
 		AudioEngine.setAudioListener(ship);
 		
-		EnemySpawner spawner = new EnemySpawner(new Rectangle(0, 0, 400, 200), shipSheet.getSprite(16, 13));
+		EnemySpawner spawner = new EnemySpawner(new Rectangle(0, 0, 350, 200), shipSheet.getSprite(16, 13), projectileSheet.getSprite(1, 0));
 		
 		Game.gameObjectHandler.addGameObject(spawner);
 		
-		/*Enemy e1 = new Enemy(200, 100, shipSheet.getSprite(16, 13));
-		
-		e1.setScale(2);
-		
-		Game.gameObjectHandler.addGameObject(e1, "Enemy_1");*/
+		Game.eventMachine.addEventListener(PlayerDiedEvent.class, this);
 		
 		/*
 		try {
@@ -118,4 +133,23 @@ public class VerticalScroller implements GameInitializer {
 		
 	}
 
+	@Override
+	public <T extends GameEvent<?>> void eventFired(T event) {
+		
+		if(event instanceof PlayerDiedEvent){
+			OnPlayerDied((PlayerDiedEvent) event);
+		}
+		
+	}
+	
+	private void OnPlayerDied(PlayerDiedEvent event){
+		
+		Ship ship = ShipFactory.getShip(event.origin.getName());
+		
+		ship.setMovmentBounds(camera.getBounds());
+		
+		ship.setLocation((camera.getWidth() - ship.getBounds().width)/2, camera.getHeight() - 150);
+		
+		Game.gameObjectHandler.addGameObject(ship, "PlayerShip");
+	}
 }

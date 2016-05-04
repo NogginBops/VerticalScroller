@@ -12,7 +12,10 @@ import verticalScroller.projectiles.Projectile;
  */
 public class BasicProjectile extends Projectile {
 	
+	//JAVADOC: BasicProjectile
+	
 	/**
+	 * @param shooter 
 	 * @param image
 	 * @param lifetime
 	 * @param x

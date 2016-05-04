@@ -2,11 +2,14 @@ package verticalScroller.enemies;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import game.Game;
 import game.gameObject.physics.Collidable;
+import game.math.ColorUtils;
+import game.math.MathUtils;
 import verticalScroller.destroyable.DestroyableSprite;
-import verticalScroller.projectiles.Projectile;
+import verticalScroller.projectiles.BasicProjectile;
 
 /**
  * 
@@ -19,32 +22,67 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	
 	//TODO: Rotate sprites (Rotation)
 	
+	protected float startHealth = health;
+	
 	private float scale = 1;
-
+	
+	private Random rand = new Random();
+	
+	private float minTime = 0.5f;
+	
+	private float maxTime = 2;
+	
+	private float timer = 1;
+	
+	private BufferedImage projectile;
+	
 	/**
 	 * 
 	 * @param x
 	 * @param y
 	 * @param sprite
+	 * @param projectile 
 	 */
-	public Enemy(float x, float y, BufferedImage sprite) {
+	public Enemy(float x, float y, BufferedImage sprite, BufferedImage projectile) {
 		super(x, y, sprite.getWidth(), sprite.getHeight(), sprite);
 		setScale(2);
+		setColor(Color.GREEN);
+		this.projectile = projectile;
+	}
+	
+	@Override
+	public void update(long timeNano) {
+		super.update(timeNano);
+		
+		timer -= timeNano / 1000000000f;
+		
+		if(timer <= 0){
+			timer = MathUtils.Lerpf(minTime, maxTime, rand.nextFloat());
+			
+			//TODO: Fire projectile
+			BasicProjectile proj = new BasicProjectile(this, projectile, 10,
+					(float)bounds.getCenterX() - projectile.getWidth()/2,
+					(float)bounds.getMaxY() - projectile.getHeight()/2,
+					0, 200);
+			
+			//TODO: Make sure the enemies do not go outside the camera or something else (e.g paths)
+			
+			setDX(rand.nextInt(100) - 50);
+			setDY(rand.nextInt(100) - 50);
+			
+			Game.gameObjectHandler.addGameObject(proj);
+		}
 	}
 
 	@Override
 	public void hasCollided(Collidable collisionObject) {
-		
+		//Do something
 	}
 	
 	@Override
 	public void damage(float damage) {
 		super.damage(damage);
-		if(health >= 5){
-			setColor(Color.green);
-		}else{
-			setColor(Color.red);
-		}
+		setColor(ColorUtils.Lerp(Color.RED, Color.GREEN, (health / startHealth)));
 	}
 	
 	/**
@@ -63,10 +101,5 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	 */
 	public float getScale(){
 		return scale;
-	}
-
-	@Override
-	public void destroy() {
-		Game.gameObjectHandler.removeGameObject(this);
 	}
 }
