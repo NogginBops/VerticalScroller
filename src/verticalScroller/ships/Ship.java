@@ -239,6 +239,14 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		updateMovement();
 		
 		isSpaceDown  = e.getKeyCode() == KeyEvent.VK_SPACE ? true : isSpaceDown;
+		
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+			if(Game.isPaused()){
+				Game.resume();
+			}else{
+				Game.pause();
+			}
+		}
 	}
 	
 	@Override

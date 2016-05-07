@@ -12,6 +12,8 @@ public interface Destroyable extends GameObject {
 	
 	//TODO: Move to game engine?
 	
+	//TODO: Invincibility
+	
 	/**
 	 * @return
 	 */

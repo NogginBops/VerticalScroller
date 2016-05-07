@@ -46,7 +46,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		settings.putSetting("Name", "VerticalScroller");
 		
-		settings.putSetting("OnScreenDebug", false);
+		settings.putSetting("OnScreenDebug", true);
 		
 		settings.putSetting("DebugID", false);
 		
@@ -111,6 +111,8 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		Game.eventMachine.addEventListener(PlayerDiedEvent.class, this);
 		
+		AudioEngine.setAudioListener(ship);
+		
 		/*
 		try {
 			Map map = Map.parseMap(new File(".\\res\\verticalScroller\\maps\\map1.xml"));
@@ -123,7 +125,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		//TODO: Fix adhoc solution
 		try {
-			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File(".\\res\\verticalScroller\\sounds\\music\\fight_looped.wav"), Music.class, "DefaultMusicLoader")).result;
+			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File(".\\res\\verticalScroller\\sounds\\music\\fight_looped.wav"), Music.class, "DefaultMusicLoader", false)).result;
 			music.play(true, 0.4f);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -151,5 +153,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		ship.setLocation((camera.getWidth() - ship.getBounds().width)/2, camera.getHeight() - 150);
 		
 		Game.gameObjectHandler.addGameObject(ship, "PlayerShip");
+		
+		AudioEngine.setAudioListener(ship);
 	}
 }

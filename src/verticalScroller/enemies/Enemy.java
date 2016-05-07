@@ -46,7 +46,7 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	public Enemy(float x, float y, BufferedImage sprite, BufferedImage projectile) {
 		super(x, y, sprite.getWidth(), sprite.getHeight(), sprite);
 		setScale(2);
-		setColor(Color.GREEN);
+		setColor(Color.WHITE);
 		this.projectile = projectile;
 	}
 	
@@ -65,12 +65,12 @@ public class Enemy extends DestroyableSprite implements Collidable{
 					(float)bounds.getMaxY() - projectile.getHeight()/2,
 					0, 200);
 			
+			Game.gameObjectHandler.addGameObject(proj);
+			
 			//TODO: Make sure the enemies do not go outside the camera or something else (e.g paths)
 			
 			setDX(rand.nextInt(100) - 50);
 			setDY(rand.nextInt(100) - 50);
-			
-			Game.gameObjectHandler.addGameObject(proj);
 		}
 	}
 
@@ -82,7 +82,7 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	@Override
 	public void damage(float damage) {
 		super.damage(damage);
-		setColor(ColorUtils.Lerp(Color.RED, Color.GREEN, (health / startHealth)));
+		setColor(ColorUtils.Lerp(Color.RED, Color.WHITE, (health / startHealth)));
 	}
 	
 	/**

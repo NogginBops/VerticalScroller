@@ -80,6 +80,11 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 			return;
 		}
 		if(collisionObject instanceof Destroyable){
+			if(collisionObject instanceof Projectile){
+				if(((Projectile) collisionObject).shooter.getClass() == shooter.getClass()){
+					return;
+				}
+			}
 			((Destroyable)collisionObject).damage(damage);
 			Game.gameObjectHandler.removeGameObject(this);
 		}
