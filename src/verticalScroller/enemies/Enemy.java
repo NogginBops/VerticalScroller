@@ -71,6 +71,8 @@ public class Enemy extends DestroyableSprite implements Collidable{
 			
 			setDX(rand.nextInt(100) - 50);
 			setDY(rand.nextInt(100) - 50);
+			
+			
 		}
 	}
 

@@ -146,14 +146,18 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	
 	private void OnPlayerDied(PlayerDiedEvent event){
 		
-		Ship ship = ShipFactory.getShip(event.origin.getName());
+		//Ship ship = ShipFactory.getShip(event.origin.getName());
 		
-		ship.setMovmentBounds(camera.getBounds());
+		event.origin.setHealth(10);
 		
-		ship.setLocation((camera.getWidth() - ship.getBounds().width)/2, camera.getHeight() - 150);
+		event.origin.setMovmentBounds(camera.getBounds());
 		
-		Game.gameObjectHandler.addGameObject(ship, "PlayerShip");
+		event.origin.setLocation((camera.getWidth() - event.origin.getBounds().width)/2, camera.getHeight() - 150);
 		
-		AudioEngine.setAudioListener(ship);
+		event.origin.setActive(true);
+		
+		//Game.gameObjectHandler.addGameObject(ship, "PlayerShip");
+		
+		//AudioEngine.setAudioListener(ship);
 	}
 }
