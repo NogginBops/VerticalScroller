@@ -33,7 +33,7 @@ public class ShipFactory {
 	 * @return
 	 */
 	public static Ship getShip(String name){
-		//TODO: Clonable interface
+		//TODO: Clone-able interface?
 		return shipMap.get(name).clone();
 	}
 }

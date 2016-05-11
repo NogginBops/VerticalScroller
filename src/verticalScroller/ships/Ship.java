@@ -27,6 +27,7 @@ import verticalScroller.projectiles.Projectile;
 public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	//FIXME: Issue where the same image gets set every frame
+	//Is this a issue now?
 	
 	private BufferedImage farLeft, left, center, right, farRight, projectile;
 	

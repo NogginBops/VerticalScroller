@@ -59,7 +59,6 @@ public class Enemy extends DestroyableSprite implements Collidable{
 		if(timer <= 0){
 			timer = MathUtils.Lerpf(minTime, maxTime, rand.nextFloat());
 			
-			//TODO: Fire projectile
 			BasicProjectile proj = new BasicProjectile(this, projectile, 10,
 					(float)bounds.getCenterX() - projectile.getWidth()/2,
 					(float)bounds.getMaxY() - projectile.getHeight()/2,

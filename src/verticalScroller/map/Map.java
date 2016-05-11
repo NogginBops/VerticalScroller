@@ -114,7 +114,6 @@ public class Map {
 				case "map":
 					
 					//Wait until next start element
-					//TODO: Make this work
 					event = reader.nextEvent();
 					while (!event.isStartElement()) {
 						event = reader.nextEvent();
