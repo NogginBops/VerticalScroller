@@ -72,7 +72,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	 * @param scale 
 	 */
 	public Ship(String name, float x, float y,  BufferedImage farLeft, BufferedImage left, BufferedImage center, BufferedImage right, BufferedImage farRight, BufferedImage projectile, float scale){
-		super(x, y, (int)(center.getWidth() * scale), (int)(center.getHeight() * scale), center);
+		super(x, y, (int)(center.getWidth() * scale), (int)(center.getHeight() * scale));
 		this.name = name;
 		this.scale = scale;
 		this.farLeft = farLeft;

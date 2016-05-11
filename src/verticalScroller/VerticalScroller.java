@@ -83,8 +83,6 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
 		
-		Game.log.logMessage("Horizontal tiles: " + shipSheet.getHorizontalTiles() + " Vertical tiles: " + shipSheet.getVerticalTiles(), "VerticalScroller");
-		
 		ShipFactory.createShip("Standard", 
 				shipSheet.getSprite(0, 6, 2, 8),
 				shipSheet.getSprite(2, 6, 4, 8),
