@@ -5,15 +5,18 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import game.Game;
+import game.controller.event.EventListener;
+import game.controller.event.GameEvent;
 import game.gameObject.BasicGameObject;
 import game.math.MathUtils;
 import game.util.UpdateListener;
+import verticalScroller.events.EnemyDestroyedEvent;
 
 /**
  * @author Julius Häger
  *
  */
-public class EnemySpawner extends BasicGameObject implements UpdateListener{
+public class EnemySpawner extends BasicGameObject implements UpdateListener, EventListener{
 	
 	//JAVADOC: EnemySpawner
 	
@@ -36,6 +39,10 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener{
 	private BufferedImage enemySprite;
 	
 	private BufferedImage projectileSprite;
+	
+	private int spawnedEnemies = 0;
+	
+	private int maxEnemies = 30;
 
 	/**
 	 * @param area
@@ -47,6 +54,8 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener{
 		
 		this.enemySprite = enemySprite;
 		this.projectileSprite = projectileSprite;
+		
+		Game.eventMachine.addEventListener(EnemyDestroyedEvent.class, this);
 	}
 	
 	Enemy enemy;
@@ -59,11 +68,23 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener{
 			timer = 0;
 			spawnTimer = minSpwanTimer + (maxSpawnTimer - minSpwanTimer) * rand.nextFloat();
 			
-			enemy = new Enemy(MathUtils.Lerp(bounds.x, bounds.x + bounds.width, rand.nextFloat()),
-					MathUtils.Lerp(bounds.y, bounds.y + bounds.height, rand.nextFloat()),
-					enemySprite, projectileSprite);
-			
-			Game.gameObjectHandler.addGameObject(enemy);
+			if(spawnedEnemies < maxEnemies){
+				enemy = new Enemy(MathUtils.Lerp(bounds.x, bounds.x + bounds.width, rand.nextFloat()),
+						MathUtils.Lerp(bounds.y, bounds.y + bounds.height, rand.nextFloat()),
+						enemySprite, projectileSprite);
+				
+				Game.gameObjectHandler.addGameObject(enemy);
+				
+				spawnedEnemies++;
+			}
 		}
 	}
+
+	@Override
+	public <T extends GameEvent<?>> void eventFired(T event) {
+		if(event instanceof EnemyDestroyedEvent){
+			spawnedEnemies--;
+		}
+	}
+	
 }

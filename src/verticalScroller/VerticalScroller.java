@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import demos.tests.Test1;
 import game.Game;
 import game.GameInitializer;
 import game.GameSettings;
@@ -32,6 +31,14 @@ import verticalScroller.ships.ShipFactory;
 public class VerticalScroller implements GameInitializer, EventListener {
 
 	//JAVADOC: VerticalScroller
+	
+	//TODO: Menu
+	
+	//TODO: Lives (Lose condition thing)
+	
+	//TODO: Upgrades/Powerups
+	
+	//TODO: Ship Energy
 	
 	private UniformSpriteSheet shipSheet;
 	
@@ -155,16 +162,5 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		event.origin.setActive(true);
 		
-		Game.loadScene((game, settings) -> {
-			
-			//Game.gameObjectHandler.addGameObject(settings.getSettingAs("MainCamera", Camera.class));
-			
-			new Test1().initialize(game, settings);
-			
-		});
-		
-		//Game.gameObjectHandler.addGameObject(ship, "PlayerShip");
-		
-		//AudioEngine.setAudioListener(ship);
 	}
 }

@@ -1,7 +1,7 @@
 package verticalScroller.enemies;
 
 import java.awt.Color;
-import java.awt.geom.Area;
+import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -10,6 +10,7 @@ import game.gameObject.physics.Collidable;
 import game.math.ColorUtils;
 import game.math.MathUtils;
 import verticalScroller.destroyable.DestroyableSprite;
+import verticalScroller.events.EnemyDestroyedEvent;
 import verticalScroller.projectiles.BasicProjectile;
 
 /**
@@ -77,8 +78,8 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	}
 
 	@Override
-	public Area getCollitionArea() {
-		return new Area(bounds);
+	public Shape getCollitionShape() {
+		return bounds;
 	}
 	
 	@Override
@@ -90,6 +91,12 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	public void damage(float damage) {
 		super.damage(damage);
 		setColor(ColorUtils.Lerp(Color.RED, Color.WHITE, (health / startHealth)));
+	}
+	
+	@Override
+	public void destroy() {
+		super.destroy();
+		Game.eventMachine.fireEvent(new EnemyDestroyedEvent(this));
 	}
 	
 	/**
