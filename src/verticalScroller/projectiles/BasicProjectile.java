@@ -1,10 +1,11 @@
 package verticalScroller.projectiles;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 
 import game.gameObject.GameObject;
-import verticalScroller.projectiles.Projectile;
 
 /**
  * @author Julius Häger

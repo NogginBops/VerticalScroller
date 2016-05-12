@@ -2,6 +2,7 @@ package verticalScroller.projectiles;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 
 import game.Game;
@@ -74,6 +75,11 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 		return sprite;
 	}
 
+	@Override
+	public Area getCollitionArea() {
+		return new Area(bounds);
+	}
+	
 	@Override
 	public void hasCollided(Collidable collisionObject) {
 		if(collisionObject.getClass() == shooter.getClass()){

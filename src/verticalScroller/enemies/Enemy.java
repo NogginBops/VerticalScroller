@@ -1,6 +1,7 @@
 package verticalScroller.enemies;
 
 import java.awt.Color;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -75,6 +76,11 @@ public class Enemy extends DestroyableSprite implements Collidable{
 		}
 	}
 
+	@Override
+	public Area getCollitionArea() {
+		return new Area(bounds);
+	}
+	
 	@Override
 	public void hasCollided(Collidable collisionObject) {
 		//Do something

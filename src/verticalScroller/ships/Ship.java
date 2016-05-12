@@ -1,7 +1,10 @@
 package verticalScroller.ships;
 
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -59,6 +62,10 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	private boolean isSpaceDown = false;
 	
+	private Shape collitionShape;
+	
+	private float radius = 1;
+	
 	/**
 	 * @param name 
 	 * @param x 
@@ -84,6 +91,8 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		this.projectile = projectile;
 		
 		health = 10;
+		
+		collitionShape = new Ellipse2D.Double(bounds.getCenterX(), bounds.getCenterY(), radius, radius);
 		
 		preloadSprites(farLeft, left, center, right, farRight);
 		
@@ -213,6 +222,18 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		dy += moveUp ? -movementSpeedVertical : 0;
 		dy += moveDown ? movementSpeedVertical : 0;
 		setDY(dy);
+	}
+	
+	@Override
+	public void updateBounds() {
+		super.updateBounds();
+		
+		collitionShape = new Ellipse2D.Double(bounds.getCenterX(), bounds.getCenterY(), radius, radius);
+	}
+	
+	@Override
+	public Area getCollitionArea() {
+		return new Area(collitionShape);
 	}
 	
 	@Override

@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import demos.tests.Test1;
 import game.Game;
 import game.GameInitializer;
 import game.GameSettings;
@@ -153,6 +154,14 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		event.origin.setLocation((camera.getWidth() - event.origin.getBounds().width)/2, camera.getHeight() - 150);
 		
 		event.origin.setActive(true);
+		
+		Game.loadScene((game, settings) -> {
+			
+			//Game.gameObjectHandler.addGameObject(settings.getSettingAs("MainCamera", Camera.class));
+			
+			new Test1().initialize(game, settings);
+			
+		});
 		
 		//Game.gameObjectHandler.addGameObject(ship, "PlayerShip");
 		
