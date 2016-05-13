@@ -14,6 +14,7 @@ import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.gameObject.physics.Collidable;
 import game.input.keys.KeyListener;
+import game.math.MathUtils;
 import game.sound.AudioEngine;
 import game.sound.AudioSource;
 import kuusisto.tinysound.Sound;
@@ -58,6 +59,14 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	private float timer = 0;
 	
 	private float delay = 0.1f;
+	
+	private float maxEnergy = 10;
+	
+	private float energyRegen = 5f;
+	
+	private float energy = maxEnergy;
+	
+	private boolean overheat = false;
 	
 	private boolean isSpaceDown = false;
 	
@@ -167,16 +176,31 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		timer += timeNano / 1000000000f;
 		if(isSpaceDown){
 			if(timer > delay){
-				//TODO: Pool projectiles?
-				BasicProjectile projectileGO = new BasicProjectile(this, projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -350);
-				Game.gameObjectHandler.addGameObject(projectileGO);
-				
-				source.setLocation(new Point2D.Float(projectileGO.getX(), projectileGO.getY()));
-				source.setSound(fireSFX);
-				AudioEngine.playSound(source);
+				if(energy > 0 && !overheat){
+					BasicProjectile projectileGO = new BasicProjectile(this, projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -350);
+					Game.gameObjectHandler.addGameObject(projectileGO);
+					
+					source.setLocation(new Point2D.Float(projectileGO.getX(), projectileGO.getY()));
+					source.setSound(fireSFX);
+					AudioEngine.playSound(source);
+					
+					energy -= 1;
+					
+					if(energy <= 0){
+						overheat = true;
+					}
+				}
 				
 				timer = 0;
 			}
+		}
+		
+		energy += energyRegen * (timeNano/1000000000f);
+		
+		energy = MathUtils.clamp(energy, 0, maxEnergy);
+		
+		if(energy == maxEnergy && overheat){
+			overheat = false;
 		}
 		
 		updateBounds();
@@ -305,5 +329,29 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		source.setLocation(new Point2D.Float((float)bounds.getCenterX(), (float)bounds.getCenterY()));
 		source.setSound(deathSFX);
 		AudioEngine.playSound(source);
+	}
+
+	public float getMaxEnergy() {
+		return maxEnergy;
+	}
+
+	public void setMaxEnergy(float maxEnergy) {
+		this.maxEnergy = maxEnergy;
+	}
+
+	public float getEnergyRegen() {
+		return energyRegen;
+	}
+
+	public void setEnergyRegen(float energyRegen) {
+		this.energyRegen = energyRegen;
+	}
+
+	public float getEnergy() {
+		return energy;
+	}
+
+	public boolean hasOverheated() {
+		return overheat;
 	}
 }

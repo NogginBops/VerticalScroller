@@ -47,6 +47,13 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	
 	private Camera camera;
 	
+	public final int maxLives = 3;
+	
+	//TODO: Is there a better way
+	public int lives = maxLives;
+	
+	
+	
 	/**
 	 * @param args
 	 */
@@ -55,7 +62,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		settings.putSetting("Name", "VerticalScroller");
 		
-		settings.putSetting("OnScreenDebug", true);
+		settings.putSetting("OnScreenDebug", false);
 		
 		settings.putSetting("DebugID", false);
 		
@@ -120,7 +127,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		AudioEngine.setAudioListener(ship);
 		
-		ShipStatusUI shipUI = new ShipStatusUI(new Rectangle(0, 0, camera.getWidth(), camera.getHeight()), ship);
+		ShipStatusUI shipUI = new ShipStatusUI(new Rectangle(0, 0, camera.getWidth(), camera.getHeight()), ship, this);
 		
 		Game.gameObjectHandler.addGameObject(shipUI, "ShipUI");
 		
@@ -159,13 +166,18 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		//Ship ship = ShipFactory.getShip(event.origin.getName());
 		
-		event.origin.setHealth(10);
+		lives--;
 		
-		event.origin.setMovmentBounds(camera.getBounds());
-		
-		event.origin.setLocation((camera.getWidth() - event.origin.getBounds().width)/2, camera.getHeight() - 150);
-		
-		event.origin.setActive(true);
-		
+		if(lives > 0){
+			event.origin.setHealth(10);
+			
+			event.origin.setMovmentBounds(camera.getBounds());
+			
+			event.origin.setLocation((camera.getWidth() - event.origin.getBounds().width)/2, camera.getHeight() - 150);
+			
+			event.origin.setActive(true);
+		}else{
+			//TODO: Game over
+		}
 	}
 }
