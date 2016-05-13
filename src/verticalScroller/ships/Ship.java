@@ -53,14 +53,11 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	private float movementSpeedHorizontal = 200;
 	private float movementSpeedVertical = 150;
 	
-	//TODO: Implement scale in Sprite
-	private float scale = 1;
-	
 	private float timer = 0;
 	
 	private float delay = 0.1f;
 	
-	private float maxEnergy = 10;
+	private float maxEnergy = 30;
 	
 	private float energyRegen = 5f;
 	
@@ -90,13 +87,14 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	public Ship(String name, float x, float y,  BufferedImage farLeft, BufferedImage left, BufferedImage center, BufferedImage right, BufferedImage farRight, BufferedImage projectile, float scale){
 		super(x, y, (int)(center.getWidth() * scale), (int)(center.getHeight() * scale));
 		this.name = name;
-		this.scale = scale;
 		this.farLeft = farLeft;
 		this.left = left;
 		this.center = center;
 		this.right = right;
 		this.farRight = farRight;
 		this.projectile = projectile;
+		
+		setScale(scale);
 		
 		health = 10;
 		
@@ -117,7 +115,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	@Override
 	public Ship clone(){
-		return new Ship(name, x, y, farLeft, farLeft, center, right, farRight, projectile, scale);
+		return new Ship(name, x, y, farLeft, farLeft, center, right, farRight, projectile, getScale());
 	}
 	
 	/**
@@ -125,23 +123,6 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	 */
 	public void setMovmentBounds(Rectangle movmentBounds){
 		this.movementBounds = movmentBounds;
-	}
-	
-	/**
-	 * @param scale
-	 */
-	public void setScale(float scale){
-		this.scale = scale;
-		width = (int)(center.getWidth() * scale);
-		height = (int)(center.getHeight() * scale);
-		updateBounds();
-	}
-	
-	/**
-	 * @return
-	 */
-	public float getScale(){
-		return scale;
 	}
 	
 	/**
@@ -331,26 +312,44 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		AudioEngine.playSound(source);
 	}
 
+	/**
+	 * @return
+	 */
 	public float getMaxEnergy() {
 		return maxEnergy;
 	}
 
+	/**
+	 * @param maxEnergy
+	 */
 	public void setMaxEnergy(float maxEnergy) {
 		this.maxEnergy = maxEnergy;
 	}
 
+	/**
+	 * @return
+	 */
 	public float getEnergyRegen() {
 		return energyRegen;
 	}
 
+	/**
+	 * @param energyRegen
+	 */
 	public void setEnergyRegen(float energyRegen) {
 		this.energyRegen = energyRegen;
 	}
 
+	/**
+	 * @return
+	 */
 	public float getEnergy() {
 		return energy;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean hasOverheated() {
 		return overheat;
 	}

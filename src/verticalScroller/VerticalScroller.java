@@ -22,6 +22,7 @@ import kuusisto.tinysound.Music;
 import verticalScroller.UI.ShipStatusUI;
 import verticalScroller.enemies.EnemySpawner;
 import verticalScroller.events.PlayerDiedEvent;
+import verticalScroller.powerups.Powerup;
 import verticalScroller.ships.Ship;
 import verticalScroller.ships.ShipFactory;
 
@@ -47,9 +48,15 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	
 	private Camera camera;
 	
+	/**
+	 * 
+	 */
 	public final int maxLives = 3;
 	
 	//TODO: Is there a better way
+	/**
+	 * 
+	 */
 	public int lives = maxLives;
 	
 	
@@ -61,7 +68,6 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		GameSettings settings = GameSettings.DEFAULT;
 		
 		settings.putSetting("Name", "VerticalScroller");
-		
 		settings.putSetting("OnScreenDebug", false);
 		
 		settings.putSetting("DebugID", false);
@@ -113,13 +119,27 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		ship.setMovmentBounds(camera.getBounds());
 		
-		ship.setLocation((camera.getWidth() - ship.getBounds().width)/2, camera.getHeight() - 150);
+		ship.setPosition((camera.getWidth() - ship.getBounds().width)/2, camera.getHeight() - 150);
 		
 		Game.gameObjectHandler.addGameObject(ship, "PlayerShip");
 		
 		AudioEngine.setAudioListener(ship);
 		
-		EnemySpawner spawner = new EnemySpawner(new Rectangle(0, 0, 350, 200), shipSheet.getSprite(16, 13), projectileSheet.getSprite(1, 0));
+		Powerup[] powerups = new Powerup[]{ 
+				new Powerup(0, 0, "Max energy ++", shipSheet.getSprite(0, 0),
+						(s) -> { s.setMaxEnergy(s.getMaxEnergy() + 1); }),
+				
+				new Powerup(0, 0, "1up", shipSheet.getSprite(0, 0),
+						(s) -> { if(lives < maxLives){ lives++; } }),
+				
+				new Powerup(0, 0, "Energy gen ++", shipSheet.getSprite(0, 0),
+						(s) -> { s.setEnergyRegen(s.getEnergyRegen() + 1); }),
+				
+				new Powerup(0, 0, "Health ++", shipSheet.getSprite(0, 0),
+						(s) -> { s.setHealth(s.getHealth() + 1); }),
+		};
+		
+		EnemySpawner spawner = new EnemySpawner(new Rectangle(0, 0, 350, 200), powerups, shipSheet.getSprite(16, 13), projectileSheet.getSprite(1, 0));
 		
 		Game.gameObjectHandler.addGameObject(spawner);
 		
@@ -173,7 +193,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 			
 			event.origin.setMovmentBounds(camera.getBounds());
 			
-			event.origin.setLocation((camera.getWidth() - event.origin.getBounds().width)/2, camera.getHeight() - 150);
+			event.origin.setPosition((camera.getWidth() - event.origin.getBounds().width)/2, camera.getHeight() - 150);
 			
 			event.origin.setActive(true);
 		}else{

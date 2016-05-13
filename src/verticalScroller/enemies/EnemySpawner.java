@@ -11,6 +11,7 @@ import game.gameObject.BasicGameObject;
 import game.math.MathUtils;
 import game.util.UpdateListener;
 import verticalScroller.events.EnemyDestroyedEvent;
+import verticalScroller.powerups.Powerup;
 
 /**
  * @author Julius Häger
@@ -43,14 +44,19 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener, Eve
 	private int spawnedEnemies = 0;
 	
 	private int maxEnemies = 30;
+	
+	private Powerup[] powerups;
 
 	/**
 	 * @param area
+	 * @param powerups 
 	 * @param enemySprite
 	 * @param projectileSprite 
 	 */
-	public EnemySpawner(Rectangle area, BufferedImage enemySprite, BufferedImage projectileSprite) {
+	public EnemySpawner(Rectangle area, Powerup[] powerups, BufferedImage enemySprite, BufferedImage projectileSprite) {
 		super(area, 5);
+		
+		this.powerups = powerups;
 		
 		this.enemySprite = enemySprite;
 		this.projectileSprite = projectileSprite;
@@ -69,9 +75,15 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener, Eve
 			spawnTimer = minSpwanTimer + (maxSpawnTimer - minSpwanTimer) * rand.nextFloat();
 			
 			if(spawnedEnemies < maxEnemies){
+				Powerup powerup = powerups[rand.nextInt(powerups.length)];
+				
+				if(rand.nextInt(10) != 0){
+					powerup = null;
+				}
+				
 				enemy = new Enemy(MathUtils.Lerp(bounds.x, bounds.x + bounds.width, rand.nextFloat()),
 						MathUtils.Lerp(bounds.y, bounds.y + bounds.height, rand.nextFloat()),
-						enemySprite, projectileSprite);
+						enemySprite, projectileSprite, powerup);
 				
 				Game.gameObjectHandler.addGameObject(enemy);
 				

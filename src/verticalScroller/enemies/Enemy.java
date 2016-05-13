@@ -11,6 +11,7 @@ import game.math.ColorUtils;
 import game.math.MathUtils;
 import verticalScroller.destroyable.DestroyableSprite;
 import verticalScroller.events.EnemyDestroyedEvent;
+import verticalScroller.powerups.Powerup;
 import verticalScroller.projectiles.BasicProjectile;
 
 /**
@@ -26,8 +27,6 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	
 	protected float startHealth = health;
 	
-	private float scale = 1;
-	
 	private Random rand = new Random();
 	
 	private float minTime = 0.5f;
@@ -38,18 +37,22 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	
 	private BufferedImage projectile;
 	
+	private Powerup drop;
+	
 	/**
 	 * 
 	 * @param x
 	 * @param y
 	 * @param sprite
 	 * @param projectile 
+	 * @param drop 
 	 */
-	public Enemy(float x, float y, BufferedImage sprite, BufferedImage projectile) {
+	public Enemy(float x, float y, BufferedImage sprite, BufferedImage projectile, Powerup drop) {
 		super(x, y, sprite.getWidth(), sprite.getHeight(), sprite);
 		setScale(2);
 		setColor(Color.WHITE);
 		this.projectile = projectile;
+		this.drop = drop;
 	}
 	
 	@Override
@@ -97,23 +100,11 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	public void destroy() {
 		super.destroy();
 		Game.eventMachine.fireEvent(new EnemyDestroyedEvent(this));
-	}
-	
-	/**
-	 * @param scale
-	 */
-	public void setScale(float scale){
-		this.scale = scale;
-		width = (int)(getSprite().getWidth() * scale);
-		height = (int)(getSprite().getHeight() * scale);
-		updateBounds();
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public float getScale(){
-		return scale;
+		if(drop != null){
+			Powerup p = drop.clone();
+			p.setPosition(x, y);
+			Game.gameObjectHandler.addGameObject(p, p.getName());
+		}
+		
 	}
 }

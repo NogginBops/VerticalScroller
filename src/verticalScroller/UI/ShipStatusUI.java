@@ -22,6 +22,10 @@ import verticalScroller.VerticalScroller;
 import verticalScroller.events.EnemyDestroyedEvent;
 import verticalScroller.ships.Ship;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class ShipStatusUI extends UI implements UpdateListener, EventListener {
 
 	private UILabel playerScore = new UILabel("Score: 0");
@@ -40,6 +44,11 @@ public class ShipStatusUI extends UI implements UpdateListener, EventListener {
 	
 	private float score;
 	
+	/**
+	 * @param area
+	 * @param ship
+	 * @param game
+	 */
 	public ShipStatusUI(Rectangle area, Ship ship, VerticalScroller game) {
 		super(area);
 		
