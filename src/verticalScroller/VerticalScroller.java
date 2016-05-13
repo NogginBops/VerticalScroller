@@ -19,6 +19,7 @@ import game.gameObject.graphics.UniformSpriteSheet;
 import game.screen.ScreenRect;
 import game.sound.AudioEngine;
 import kuusisto.tinysound.Music;
+import verticalScroller.UI.ShipStatusUI;
 import verticalScroller.enemies.EnemySpawner;
 import verticalScroller.events.PlayerDiedEvent;
 import verticalScroller.ships.Ship;
@@ -81,8 +82,8 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		BufferedImage projectileSheetImage = null;
 		
 		try {
-			shipSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/verticalScroller/graphics/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
-			projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", new File("./res/verticalScroller/graphics/ProjectileSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
+			shipSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/graphics/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
+			projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", new File("./res/graphics/ProjectileSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -119,6 +120,10 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		AudioEngine.setAudioListener(ship);
 		
+		ShipStatusUI shipUI = new ShipStatusUI(new Rectangle(0, 0, camera.getWidth(), camera.getHeight()), ship);
+		
+		Game.gameObjectHandler.addGameObject(shipUI, "ShipUI");
+		
 		/*
 		try {
 			Map map = Map.parseMap(new File(".\\res\\verticalScroller\\maps\\map1.xml"));
@@ -131,7 +136,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		//TODO: Fix adhoc solution
 		try {
-			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File(".\\res\\verticalScroller\\sounds\\music\\fight_looped.wav"), Music.class, "DefaultMusicLoader", false)).result;
+			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File(".\\res\\sounds\\music\\fight_looped.wav"), Music.class, "DefaultMusicLoader", false)).result;
 			music.play(true, 0.4f);
 		} catch (IOException e) {
 			e.printStackTrace();
