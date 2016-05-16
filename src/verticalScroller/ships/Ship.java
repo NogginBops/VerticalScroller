@@ -40,8 +40,6 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	private Sound deathSFX;
 	
-	//TODO: On created method?
-	@SuppressWarnings("unused")
 	private Sound spawnSFX;
 	
 	private AudioSource source;
@@ -130,6 +128,18 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	 */
 	public String getName(){
 		return name;
+	}
+	
+	@Override
+	public void setActive(boolean active) {
+		super.setActive(active);
+		if(active = true && !this.isActive()){
+			source.setLocation(new Point2D.Float((float)bounds.getCenterX(), (float)bounds.getCenterY()));
+			source.setVolume(0.2f);
+			source.setSound(spawnSFX);
+			AudioEngine.playSound(source);
+			source.setVolume(1);
+		}
 	}
 	
 	@Override
@@ -248,7 +258,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		if(collisionObject instanceof Projectile && ((Projectile)collisionObject).getShooter() != this){
 			source.setLocation(new Point2D.Float((float)collisionObject.getBounds().getCenterX(), (float)collisionObject.getBounds().getCenterY()));
 			source.setSound(hitSFX);
-			source.setVolume(2);
+			source.setVolume(0.5f);
 			AudioEngine.playSound(source);
 			source.setVolume(1);
 		}
@@ -257,17 +267,17 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		
-		moveLeft = Game.keyHandler.bound("PlayerLeft", e.getKeyCode()) ? true : moveLeft;
+		moveLeft = Game.keyHandler.isBound("PlayerLeft", e.getKeyCode()) ? true : moveLeft;
 		
-		moveRight = Game.keyHandler.bound("PlayerRight", e.getKeyCode()) ? true : moveRight;
+		moveRight = Game.keyHandler.isBound("PlayerRight", e.getKeyCode()) ? true : moveRight;
 		
-		moveUp = Game.keyHandler.bound("PlayerUp", e.getKeyCode()) ? true : moveUp;
+		moveUp = Game.keyHandler.isBound("PlayerUp", e.getKeyCode()) ? true : moveUp;
 		
-		moveDown = Game.keyHandler.bound("PlayerDown", e.getKeyCode()) ? true : moveDown;
+		moveDown = Game.keyHandler.isBound("PlayerDown", e.getKeyCode()) ? true : moveDown;
 		
 		updateMovement();
 		
-		isSpaceDown  = Game.keyHandler.bound("PlayerFire", e.getKeyCode()) ? true : isSpaceDown;
+		isSpaceDown  = Game.keyHandler.isBound("PlayerFire", e.getKeyCode()) ? true : isSpaceDown;
 		
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
 			if(Game.isPaused()){
@@ -281,17 +291,17 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		
-		moveLeft = Game.keyHandler.bound("PlayerLeft", e.getKeyCode()) ? false : moveLeft;
+		moveLeft = Game.keyHandler.isBound("PlayerLeft", e.getKeyCode()) ? false : moveLeft;
 		
-		moveRight = Game.keyHandler.bound("PlayerRight", e.getKeyCode()) ? false : moveRight;
+		moveRight = Game.keyHandler.isBound("PlayerRight", e.getKeyCode()) ? false : moveRight;
 		
-		moveUp = Game.keyHandler.bound("PlayerUp", e.getKeyCode()) ? false : moveUp;
+		moveUp = Game.keyHandler.isBound("PlayerUp", e.getKeyCode()) ? false : moveUp;
 		
-		moveDown = Game.keyHandler.bound("PlayerDown", e.getKeyCode()) ? false : moveDown;
+		moveDown = Game.keyHandler.isBound("PlayerDown", e.getKeyCode()) ? false : moveDown;
 		
 		updateMovement();
 		
-		isSpaceDown  = Game.keyHandler.bound("PlayerFire", e.getKeyCode()) ? false : isSpaceDown;
+		isSpaceDown  = Game.keyHandler.isBound("PlayerFire", e.getKeyCode()) ? false : isSpaceDown;
 	}
 	
 	@Override
@@ -306,7 +316,6 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	@Override
 	public void destroy() {
-		//super.destroy();
 		setActive(false);
 		Game.eventMachine.fireEvent(new PlayerDiedEvent(this));
 		

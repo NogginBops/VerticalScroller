@@ -70,7 +70,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		settings.putSetting("Name", "VerticalScroller");
 		
-		settings.putSetting("OnScreenDebug", true);
+		settings.putSetting("OnScreenDebug", false);
 		
 		settings.putSetting("DebugID", false);
 		
@@ -169,6 +169,8 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		}
 		*/
 		
+		//TODO: Some kind of resource handling, so that you don't have to write the full path.
+		
 		//TODO: Fix adhoc solution
 		try {
 			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File(".\\res\\sounds\\music\\fight_looped.wav"), Music.class, "DefaultMusicLoader", false)).result;
@@ -190,10 +192,9 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 	}
 	
+	//TODO: Event delay or create some other kind of solution for delaying the respawn.
+	
 	private void OnPlayerDied(PlayerDiedEvent event){
-		
-		//Ship ship = ShipFactory.getShip(event.origin.getName());
-		
 		lives--;
 		
 		if(lives > 0){
