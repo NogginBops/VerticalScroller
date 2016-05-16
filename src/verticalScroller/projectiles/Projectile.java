@@ -32,6 +32,8 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	
 	private float timer;
 	
+	private float scale = 1;
+	
 	/**
 	 * @param shooter 
 	 * @param x
@@ -45,6 +47,25 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 		sprite = image;
 		this.lifetime = lifetime;
 		timer = 0;
+		
+		setScale(2);
+	}
+	
+	/**
+	 * @param scale
+	 */
+	public void setScale(float scale){
+		this.width = (int) (sprite.getWidth() * scale);
+		this.height = (int) (sprite.getHeight() * scale);
+		this.scale = scale;
+		updateBounds();
+	}
+	
+	/**
+	 * @return
+	 */
+	public float getScale(){
+		return scale;
 	}
 	
 	/**

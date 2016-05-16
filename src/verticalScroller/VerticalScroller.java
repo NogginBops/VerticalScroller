@@ -3,6 +3,7 @@ package verticalScroller;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +69,8 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		GameSettings settings = GameSettings.DEFAULT;
 		
 		settings.putSetting("Name", "VerticalScroller");
-		settings.putSetting("OnScreenDebug", false);
+		
+		settings.putSetting("OnScreenDebug", true);
 		
 		settings.putSetting("DebugID", false);
 		
@@ -89,6 +91,12 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	
 	@Override
 	public void initialize(Game game, GameSettings settings) {
+		
+		Game.keyHandler.addKeyBinding("PlayerUp", KeyEvent.VK_W, KeyEvent.VK_UP);
+		Game.keyHandler.addKeyBinding("PlayerDown", KeyEvent.VK_S, KeyEvent.VK_DOWN);
+		Game.keyHandler.addKeyBinding("PlayerLeft", KeyEvent.VK_A, KeyEvent.VK_LEFT);
+		Game.keyHandler.addKeyBinding("PlayerRight", KeyEvent.VK_D, KeyEvent.VK_RIGHT);
+		Game.keyHandler.addKeyBinding("PlayerFire", KeyEvent.VK_SPACE);
 		
 		BufferedImage shipSheetImage = null;
 		
@@ -169,7 +177,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 			e.printStackTrace();
 		}
 		
-		AudioEngine.setMasterVolume(0.01f);
+		AudioEngine.setMasterVolume(0.2f);
 		
 	}
 

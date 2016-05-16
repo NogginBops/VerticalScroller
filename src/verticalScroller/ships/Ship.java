@@ -159,6 +159,9 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 			if(timer > delay){
 				if(energy > 0 && !overheat){
 					BasicProjectile projectileGO = new BasicProjectile(this, projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -350);
+					
+					projectileGO.setPosition(x + ((width - (float)(projectileGO.getBounds().getWidth()))/2), y);
+					
 					Game.gameObjectHandler.addGameObject(projectileGO);
 					
 					source.setLocation(new Point2D.Float(projectileGO.getX(), projectileGO.getY()));
@@ -253,18 +256,18 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
-			moveLeft = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
-			moveRight = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
-			moveUp = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
-			moveDown = true;
-		}
+		
+		moveLeft = Game.keyHandler.bound("PlayerLeft", e.getKeyCode()) ? true : moveLeft;
+		
+		moveRight = Game.keyHandler.bound("PlayerRight", e.getKeyCode()) ? true : moveRight;
+		
+		moveUp = Game.keyHandler.bound("PlayerUp", e.getKeyCode()) ? true : moveUp;
+		
+		moveDown = Game.keyHandler.bound("PlayerDown", e.getKeyCode()) ? true : moveDown;
+		
 		updateMovement();
 		
-		isSpaceDown  = e.getKeyCode() == KeyEvent.VK_SPACE ? true : isSpaceDown;
+		isSpaceDown  = Game.keyHandler.bound("PlayerFire", e.getKeyCode()) ? true : isSpaceDown;
 		
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
 			if(Game.isPaused()){
@@ -277,18 +280,18 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
-			moveLeft = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
-			moveRight = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
-			moveUp = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
-			moveDown = false;
-		}
+		
+		moveLeft = Game.keyHandler.bound("PlayerLeft", e.getKeyCode()) ? false : moveLeft;
+		
+		moveRight = Game.keyHandler.bound("PlayerRight", e.getKeyCode()) ? false : moveRight;
+		
+		moveUp = Game.keyHandler.bound("PlayerUp", e.getKeyCode()) ? false : moveUp;
+		
+		moveDown = Game.keyHandler.bound("PlayerDown", e.getKeyCode()) ? false : moveDown;
+		
 		updateMovement();
 		
-		isSpaceDown = e.getKeyCode() == KeyEvent.VK_SPACE ? false : isSpaceDown;
+		isSpaceDown  = Game.keyHandler.bound("PlayerFire", e.getKeyCode()) ? false : isSpaceDown;
 	}
 	
 	@Override

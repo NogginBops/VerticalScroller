@@ -53,6 +53,8 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 		this.image = image;
 		this.effect = effect;
 		
+		setScale(2);
+		
 		setDY(80);
 		
 	}
