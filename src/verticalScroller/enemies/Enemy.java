@@ -7,8 +7,8 @@ import java.util.Random;
 
 import game.Game;
 import game.gameObject.physics.Collidable;
-import game.math.ColorUtils;
-import game.math.MathUtils;
+import game.util.math.ColorUtils;
+import game.util.math.MathUtils;
 import verticalScroller.destroyable.DestroyableSprite;
 import verticalScroller.events.EnemyDestroyedEvent;
 import verticalScroller.powerups.Powerup;

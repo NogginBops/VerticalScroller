@@ -8,8 +8,8 @@ import game.Game;
 import game.controller.event.EventListener;
 import game.controller.event.GameEvent;
 import game.gameObject.BasicGameObject;
-import game.math.MathUtils;
 import game.util.UpdateListener;
+import game.util.math.MathUtils;
 import verticalScroller.events.EnemyDestroyedEvent;
 import verticalScroller.powerups.Powerup;
 
