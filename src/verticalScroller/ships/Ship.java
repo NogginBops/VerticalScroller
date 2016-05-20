@@ -317,7 +317,19 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	@Override
 	public void destroy() {
 		setActive(false);
-		Game.eventMachine.fireEvent(new PlayerDiedEvent(this));
+		Game.eventMachine.fireEvent(new PlayerDiedEvent(this), 500);
+		
+		moveLeft = false;
+		
+		moveRight = false;
+		
+		moveUp = false;
+		
+		moveDown = false;
+		
+		updateMovement();
+		
+		isSpaceDown = false;
 		
 		source.setLocation(new Point2D.Float((float)bounds.getCenterX(), (float)bounds.getCenterY()));
 		source.setSound(deathSFX);
