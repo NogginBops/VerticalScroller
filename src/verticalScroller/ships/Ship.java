@@ -168,7 +168,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		if(isSpaceDown){
 			if(timer > delay){
 				if(energy > 0 && !overheat){
-					BasicProjectile projectileGO = new BasicProjectile(this, projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -350);
+					BasicProjectile projectileGO = new BasicProjectile(this, projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -400);
 					
 					projectileGO.setPosition(x + ((width - (float)(projectileGO.getBounds().getWidth()))/2), y);
 					
