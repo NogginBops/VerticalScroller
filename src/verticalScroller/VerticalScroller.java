@@ -17,6 +17,8 @@ import game.controller.event.EventListener;
 import game.controller.event.GameEvent;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.UniformSpriteSheet;
+import game.gameObject.particles.ParticleSystem;
+import game.gameObject.particles.ParticleSystem.ParticleEmitter;
 import game.screen.ScreenRect;
 import game.sound.AudioEngine;
 import kuusisto.tinysound.Music;
@@ -48,6 +50,10 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	private UniformSpriteSheet projectileSheet;
 	
 	private Camera camera;
+	
+	private ParticleSystem trailExaust;
+	
+	private ParticleEmitter trailEmitter;
 	
 	/**
 	 * 
@@ -180,6 +186,28 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		}
 		
 		AudioEngine.setMasterVolume(0.2f);
+		
+		//TODO: Find a better way of handling particle systems
+		
+		//TODO: Non gameObject updateListeners
+		//These should be used for things like this where we want a gameobject to relate to another
+		//gameobject but the behavior of the individual gameobjects do not support this.
+		//NOTE: There might be another solution that works better!
+		
+		trailExaust = new ParticleSystem(new Rectangle((int)ship.getX(), (int)(ship.getY() + ship.getBounds().getHeight()), (int)ship.getBounds().getWidth(), 300), ship.getZOrder() - 1, 200);
+		
+		trailEmitter = trailExaust.new ParticleEmitter(15, 0, (int)trailExaust.getBounds().getWidth() - 30, 20, 30f);
+		
+		trailExaust.addEmitter(trailEmitter);
+		
+		try {
+			BufferedImage fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File(".\\res\\graphics\\Fire.png"), BufferedImage.class)).result;
+			trailExaust.addImage(0, fireImg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		Game.gameObjectHandler.addGameObject(trailExaust, "TrailExaust");
 		
 	}
 
