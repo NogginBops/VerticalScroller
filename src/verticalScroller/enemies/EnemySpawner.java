@@ -67,8 +67,8 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener, Eve
 	Enemy enemy;
 	
 	@Override
-	public void update(long timeNano) {
-		timer += timeNano / 1000000000f;
+	public void update(float deltaTime) {
+		timer += deltaTime;
 		
 		if(timer > spawnTimer){
 			timer = 0;

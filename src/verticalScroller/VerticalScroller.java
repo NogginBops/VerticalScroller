@@ -17,6 +17,7 @@ import game.controller.event.EventListener;
 import game.controller.event.GameEvent;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.UniformSpriteSheet;
+import game.gameObject.particles.Particle;
 import game.gameObject.particles.ParticleSystem;
 import game.gameObject.particles.ParticleSystem.ParticleEmitter;
 import game.screen.ScreenRect;
@@ -72,11 +73,13 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		System.setProperty("sun.java2d.opengl", "false");
+		
 		GameSettings settings = GameSettings.DEFAULT;
 		
 		settings.putSetting("Name", "VerticalScroller");
 		
-		settings.putSetting("OnScreenDebug", false);
+		settings.putSetting("OnScreenDebug", true);
 		
 		settings.putSetting("DebugID", false);
 		
@@ -194,21 +197,47 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		//gameobject but the behavior of the individual gameobjects do not support this.
 		//NOTE: There might be another solution that works better!
 		
-		trailExaust = new ParticleSystem(new Rectangle((int)ship.getX(), (int)(ship.getY() + ship.getBounds().getHeight()), (int)ship.getBounds().getWidth(), 300), ship.getZOrder() - 1, 200);
+		Rectangle rect = camera.getBounds();
 		
-		trailEmitter = trailExaust.new ParticleEmitter(15, 0, (int)trailExaust.getBounds().getWidth() - 30, 20, 30f);
+		rect.height += 50;
+		
+		trailExaust = new ParticleSystem(rect, ship.getZOrder() - 1, 400);
+		
+		Particle[] particles = trailExaust.getParticles();
+		
+		for (int i = 0; i < particles.length; i++) {
+			if(i % 2 == 0){
+				particles[i].image = 1;
+			}
+		}
+		
+		trailEmitter = trailExaust.new ParticleEmitter(10, 0, ship.getBounds().width - 20, 20, 200f);
 		
 		trailExaust.addEmitter(trailEmitter);
+		
+		ParticleSystem s = new ParticleSystem(rect, ship.getZOrder() - 1, 200);
+		
+		ParticleEmitter em = s.new ParticleEmitter(0, 0, (float) s.getBounds().getWidth(), 10, 100f);
+		
+		s.addEmitter(em);
+		
+		Game.gameObjectHandler.addGameObject(s, "System");
 		
 		try {
 			BufferedImage fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File(".\\res\\graphics\\Fire.png"), BufferedImage.class)).result;
 			trailExaust.addImage(0, fireImg);
+			fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File(".\\res\\graphics\\Fire2.png"), BufferedImage.class)).result;
+			trailExaust.addImage(1, fireImg);
+			fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File(".\\res\\graphics\\Heart_Alive.png"), BufferedImage.class)).result;
+			fireImg = projectileSheet.getSprite(0, 0);
+			s.addImage(0, fireImg);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		Game.gameObjectHandler.addGameObject(trailExaust, "TrailExaust");
 		
+		ship.setTrailParticleEmitter(trailEmitter);
 	}
 
 	@Override

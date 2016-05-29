@@ -96,8 +96,8 @@ public class ShipStatusUI extends UI implements UpdateListener, EventListener {
 	}
 
 	@Override
-	public void update(long timeNano) {
-		score += 10 * (timeNano / 1000000000f);
+	public void update(float deltaTime) {
+		score += 10 * deltaTime;
 		
 		playerScore.setText("Score: " + ((int) (score + 0.5f)));
 		

@@ -76,10 +76,10 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	}
 	
 	@Override
-	public void update(long timeNano) {
-		super.update(timeNano);
+	public void update(float deltaTime) {
+		super.update(deltaTime);
 		
-		timer += timeNano / 1000000000f;
+		timer += deltaTime;
 		if(timer > lifetime){
 			Game.gameObjectHandler.removeGameObject(this);
 		}

@@ -12,6 +12,7 @@ import java.io.IOException;
 import game.Game;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
+import game.gameObject.particles.ParticleSystem.ParticleEmitter;
 import game.gameObject.physics.Collidable;
 import game.input.keys.KeyListener;
 import game.sound.AudioEngine;
@@ -69,6 +70,9 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	private float radius = 4;
 	
+	//TODO: Find a better way of doing this
+	private ParticleEmitter trailEmitter;
+	
 	/**
 	 * @param name 
 	 * @param x 
@@ -111,6 +115,15 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		}
 	}
 	
+	
+	//TODO: Better solution
+	/**
+	 * @param trailEmitter
+	 */
+	public void setTrailParticleEmitter(ParticleEmitter trailEmitter){
+		this.trailEmitter = trailEmitter;
+	}
+	
 	@Override
 	public Ship clone(){
 		return new Ship(name, x, y, farLeft, farLeft, center, right, farRight, projectile, getScale());
@@ -133,6 +146,9 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	@Override
 	public void setActive(boolean active) {
 		super.setActive(active);
+		
+		trailEmitter.enabled = active;
+		
 		if(active = true && !this.isActive()){
 			source.setLocation(new Point2D.Float((float)bounds.getCenterX(), (float)bounds.getCenterY()));
 			source.setVolume(0.2f);
@@ -143,8 +159,8 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	}
 	
 	@Override
-	public void update(long timeNano) {
-		super.update(timeNano);
+	public void update(float deltaTime) {
+		super.update(deltaTime);
 		
 		//This should be done another way but is fine for now
 		//FIXME: setSprite
@@ -164,7 +180,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 			setSprite(center);
 		}
 		
-		timer += timeNano / 1000000000f;
+		timer += deltaTime;
 		if(isSpaceDown){
 			if(timer > delay){
 				if(energy > 0 && !overheat){
@@ -189,7 +205,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 			}
 		}
 		
-		energy += energyRegen * (timeNano/1000000000f);
+		energy += energyRegen * deltaTime;
 		
 		energy = MathUtils.clamp(energy, 0, maxEnergy);
 		
@@ -225,6 +241,11 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 			}
 			
 			updateBounds();
+		}
+		
+		if(trailEmitter != null){
+			trailEmitter.x = x + 10;
+			trailEmitter.y = y + height - 5;
 		}
 	}
 	

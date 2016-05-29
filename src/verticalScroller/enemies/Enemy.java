@@ -56,10 +56,10 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	}
 	
 	@Override
-	public void update(long timeNano) {
-		super.update(timeNano);
+	public void update(float deltaTime) {
+		super.update(deltaTime);
 		
-		timer -= timeNano / 1000000000f;
+		timer -= deltaTime;
 		
 		if(timer <= 0){
 			timer = MathUtils.Lerpf(minTime, maxTime, rand.nextFloat());
