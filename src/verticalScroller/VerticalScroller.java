@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 import game.Game;
 import game.GameInitializer;
@@ -18,10 +19,14 @@ import game.controller.event.GameEvent;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.UniformSpriteSheet;
 import game.gameObject.particles.Particle;
+import game.gameObject.particles.ParticleEffector;
+import game.gameObject.particles.ParticleEffector.OverLifteimeFunction;
+import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.particles.ParticleSystem;
-import game.gameObject.particles.ParticleSystem.ParticleEmitter;
 import game.screen.ScreenRect;
 import game.sound.AudioEngine;
+import game.util.math.ColorUtils;
+import game.util.math.MathUtils;
 import kuusisto.tinysound.Music;
 import verticalScroller.UI.ShipStatusUI;
 import verticalScroller.enemies.EnemySpawner;
@@ -197,6 +202,8 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		//gameobject but the behavior of the individual gameobjects do not support this.
 		//NOTE: There might be another solution that works better!
 		
+		OverLifteimeFunction<Float> scaleFunction = (ratio) -> { return (float) MathUtils.max(0.2f, ratio); };
+		
 		Rectangle rect = camera.getBounds();
 		
 		rect.height += 50;
@@ -211,15 +218,61 @@ public class VerticalScroller implements GameInitializer, EventListener {
 			}
 		}
 		
-		trailEmitter = trailExaust.new ParticleEmitter(10, 0, ship.getBounds().width - 20, 20, 200f);
+		trailEmitter = new ParticleEmitter(10, 0, ship.getBounds().width - 20, 20, 400f);
 		
 		trailExaust.addEmitter(trailEmitter);
 		
+		trailExaust.addEffector(new ParticleEffector() {
+			
+			Random rand = new Random();
+			
+			@Override
+			public void effect(Particle[] particles, float deltaTime) {
+				for (int i = 0; i < particles.length; i++) {
+					if(particles[i].dx > 0){
+						particles[i].dx += 40 * deltaTime;
+					}else if(particles[i].dx < 0){
+						particles[i].dx -= 40 * deltaTime;
+					}else{
+						particles[i].dx = (rand.nextFloat() - 0.5f) * deltaTime;
+					}
+					particles[i].dy = 200;
+				}
+			}
+		});
+		
+		trailExaust.addEffector(new ParticleEffector() {
+			
+			@Override
+			public void effect(Particle[] particles, float deltaTime) {
+				for (int i = 0; i < particles.length; i++) {
+					if(particles[i].image == 0){
+						particles[i].color = ColorUtils.Lerp(Color.red, Color.white, (particles[i].currLifetime)/(particles[i].lifetime));				
+					}
+				}
+			}
+		});
+		
+		trailExaust.addEffector(ParticleEffector.getScaleWithLifetimeEffector(scaleFunction));
+		
+		//TODO: Remove or find a good use for this particle system
 		ParticleSystem s = new ParticleSystem(rect, ship.getZOrder() - 1, 200);
 		
-		ParticleEmitter em = s.new ParticleEmitter(0, 0, (float) s.getBounds().getWidth(), 10, 100f);
+		ParticleEmitter em = new ParticleEmitter(0, 0, (float) s.getBounds().getWidth(), 10, 100f);
 		
 		s.addEmitter(em);
+		
+		s.addEffector(new ParticleEffector() {
+			Random rand = new Random();
+			@Override
+			public void effect(Particle[] particles, float deltaTime) {
+				for (int i = 0; i < particles.length; i++) {
+					particles[i].y += 100 * deltaTime * (1 + rand.nextFloat());
+				}
+			}
+		});
+		
+		s.addEffector(ParticleEffector.getScaleWithLifetimeEffector(scaleFunction));
 		
 		Game.gameObjectHandler.addGameObject(s, "System");
 		

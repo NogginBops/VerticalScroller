@@ -12,7 +12,7 @@ import java.io.IOException;
 import game.Game;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
-import game.gameObject.particles.ParticleSystem.ParticleEmitter;
+import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.physics.Collidable;
 import game.input.keys.KeyListener;
 import game.sound.AudioEngine;
