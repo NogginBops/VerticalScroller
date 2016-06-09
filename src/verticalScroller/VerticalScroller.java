@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
 
 import game.Game;
 import game.GameInitializer;
@@ -20,9 +22,9 @@ import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.UniformSpriteSheet;
 import game.gameObject.particles.Particle;
 import game.gameObject.particles.ParticleEffector;
-import game.gameObject.particles.ParticleEffector.OverLifteimeFunction;
 import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.particles.ParticleSystem;
+import game.screen.ScreenManager;
 import game.screen.ScreenRect;
 import game.sound.AudioEngine;
 import game.util.math.ColorUtils;
@@ -84,6 +86,8 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		settings.putSetting("Name", "VerticalScroller");
 		
+		settings.putSetting("ScreenMode", ScreenManager.NORMAL);
+		
 		settings.putSetting("OnScreenDebug", true);
 		
 		settings.putSetting("DebugID", false);
@@ -110,7 +114,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		Game.keyHandler.addKeyBinding("PlayerDown", KeyEvent.VK_S, KeyEvent.VK_DOWN);
 		Game.keyHandler.addKeyBinding("PlayerLeft", KeyEvent.VK_A, KeyEvent.VK_LEFT);
 		Game.keyHandler.addKeyBinding("PlayerRight", KeyEvent.VK_D, KeyEvent.VK_RIGHT);
-		Game.keyHandler.addKeyBinding("PlayerFire", KeyEvent.VK_SPACE);
+		Game.keyHandler.addKeyBinding("PlayerFire", KeyEvent.VK_SPACE, KeyEvent.VK_ENTER);
 		
 		BufferedImage shipSheetImage = null;
 		
@@ -195,14 +199,15 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		AudioEngine.setMasterVolume(0.2f);
 		
-		//TODO: Find a better way of handling particle systems
 		
 		//TODO: Non gameObject updateListeners
 		//These should be used for things like this where we want a gameobject to relate to another
 		//gameobject but the behavior of the individual gameobjects do not support this.
 		//NOTE: There might be another solution that works better!
 		
-		OverLifteimeFunction<Float> scaleFunction = (ratio) -> { return (float) MathUtils.max(0.2f, ratio); };
+		Function<Float, Float> scaleFunction = (ratio) -> { return (float) MathUtils.max(0.2f, ratio); };
+		
+		BiPredicate<Particle, Float> acceptAll = (particle, deltaTime) -> { return true; };
 		
 		Rectangle rect = camera.getBounds();
 		
@@ -210,15 +215,28 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		trailExaust = new ParticleSystem(rect, ship.getZOrder() - 1, 400);
 		
+		trailExaust.setAllGranularities(100);
+		
 		Particle[] particles = trailExaust.getParticles();
 		
+		Random rand = new Random();
+		
 		for (int i = 0; i < particles.length; i++) {
-			if(i % 2 == 0){
-				particles[i].image = 1;
-			}
+			particles[i].image = rand.nextInt(2);
 		}
 		
 		trailEmitter = new ParticleEmitter(10, 0, ship.getBounds().width - 20, 20, 400f);
+		
+		trailEmitter.customizer = (particle) -> {
+			//particle.color = Color.white;
+			if(ship.hasOverheated()){
+				//If ship has overheated spawn steam particles
+				particle.image = 2;
+			}else{
+				//Otherwise spawn fire particles
+				particle.image = rand.nextInt(2);
+			}
+		};
 		
 		trailExaust.addEmitter(trailEmitter);
 		
@@ -227,52 +245,63 @@ public class VerticalScroller implements GameInitializer, EventListener {
 			Random rand = new Random();
 			
 			@Override
-			public void effect(Particle[] particles, float deltaTime) {
-				for (int i = 0; i < particles.length; i++) {
-					if(particles[i].dx > 0){
-						particles[i].dx += 40 * deltaTime;
-					}else if(particles[i].dx < 0){
-						particles[i].dx -= 40 * deltaTime;
-					}else{
-						particles[i].dx = (rand.nextFloat() - 0.5f) * deltaTime;
-					}
-					particles[i].dy = 200;
+			public void effect(Particle particle, float deltaTime) {
+				if(particle.dx > 0){
+					particle.dx += 40 * deltaTime;
+				}else if(particle.dx < 0){
+					particle.dx -= 40 * deltaTime;
+				}else{
+					particle.dx = (rand.nextFloat() - 0.5f) * deltaTime;
 				}
+				particle.dy = 200;
 			}
 		});
 		
-		trailExaust.addEffector(new ParticleEffector() {
-			
-			@Override
-			public void effect(Particle[] particles, float deltaTime) {
-				for (int i = 0; i < particles.length; i++) {
-					if(particles[i].image == 0){
-						particles[i].color = ColorUtils.Lerp(Color.red, Color.white, (particles[i].currLifetime)/(particles[i].lifetime));				
-					}
-				}
-			}
-		});
+		trailExaust.addEffector(ParticleEffector.createColorOverLifetimeEffector(
+				(particle, deltaTime) -> { return particle.image == 0; },
+				(ratio) -> { return ColorUtils.Lerp(Color.white, Color.red, ratio);}));
 		
-		trailExaust.addEffector(ParticleEffector.getScaleWithLifetimeEffector(scaleFunction));
+		trailExaust.addEffector(ParticleEffector.createScaleOverLifetimeEffector(acceptAll, scaleFunction));
+		
+		trailExaust.debug = true;
 		
 		//TODO: Remove or find a good use for this particle system
+		//Background?
 		ParticleSystem s = new ParticleSystem(rect, ship.getZOrder() - 1, 200);
 		
-		ParticleEmitter em = new ParticleEmitter(0, 0, (float) s.getBounds().getWidth(), 10, 100f);
+		ParticleEmitter em = new ParticleEmitter(0, 0, (float) s.getBounds().getWidth(), (float)s.getBounds().getHeight(), 10f);
+		
+		em.customizer = (particle) -> {
+			particle.lifetime = particle.currLifetime = 5 + (5 * rand.nextFloat());
+			particle.dy = 10;
+			particle.color = particle.color.brighter();
+			
+			particle.color = new Color(particle.color.getRed(), particle.color.getGreen(), particle.color.getBlue(), 100);
+		};
 		
 		s.addEmitter(em);
 		
 		s.addEffector(new ParticleEffector() {
 			Random rand = new Random();
 			@Override
-			public void effect(Particle[] particles, float deltaTime) {
-				for (int i = 0; i < particles.length; i++) {
-					particles[i].y += 100 * deltaTime * (1 + rand.nextFloat());
-				}
+			public void effect(Particle particle, float deltaTime) {
+				particle.y += 10 * deltaTime * (1 + rand.nextFloat());
 			}
 		});
 		
-		s.addEffector(ParticleEffector.getScaleWithLifetimeEffector(scaleFunction));
+		Color transpYellow = ColorUtils.createTransparent(Color.YELLOW, 100);
+		Color transpGreen = ColorUtils.createTransparent(Color.GREEN, 50);
+		
+		s.addEffector(ParticleEffector.createColorOverLifetimeEffector(acceptAll, 
+				(ratio) -> { return ColorUtils.Lerp(transpYellow, transpGreen, 1-ratio); }));
+		
+		s.setAllGranularities(64);
+		
+		s.aGranularity = 10;
+		
+		s.debug = true;
+		
+		s.addEffector(ParticleEffector.createScaleOverLifetimeEffector(acceptAll, scaleFunction.andThen((value) -> { return value * 5; })));
 		
 		Game.gameObjectHandler.addGameObject(s, "System");
 		
@@ -290,6 +319,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		Game.gameObjectHandler.addGameObject(trailExaust, "TrailExaust");
 		
+		//TODO: Find a better way of handling particle systems
 		ship.setTrailParticleEmitter(trailEmitter);
 	}
 
