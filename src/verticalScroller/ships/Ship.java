@@ -398,4 +398,18 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	public boolean hasOverheated() {
 		return overheat;
 	}
+	
+	/**
+	 * @param delay
+	 */
+	public void setFireDelay(float delay){
+		this.delay = MathUtils.max(0.01f, delay);
+	}
+	
+	/**
+	 * @return
+	 */
+	public float getFireDelay(){
+		return delay;
+	}
 }

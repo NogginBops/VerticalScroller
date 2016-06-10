@@ -88,7 +88,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		settings.putSetting("ScreenMode", ScreenManager.NORMAL);
 		
-		settings.putSetting("OnScreenDebug", true);
+		settings.putSetting("OnScreenDebug", false);
 		
 		settings.putSetting("DebugID", false);
 		
@@ -153,16 +153,16 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		Powerup[] powerups = new Powerup[]{ 
 				new Powerup(0, 0, "Max energy ++", shipSheet.getSprite(0, 0),
-						(s) -> { s.setMaxEnergy(s.getMaxEnergy() + 1); }),
+						(s) -> { s.setMaxEnergy(s.getMaxEnergy() * 1.1f); }),
 				
 				new Powerup(0, 0, "1up", shipSheet.getSprite(0, 0),
 						(s) -> { if(lives < maxLives){ lives++; } }),
 				
 				new Powerup(0, 0, "Energy gen ++", shipSheet.getSprite(0, 0),
-						(s) -> { s.setEnergyRegen(s.getEnergyRegen() + 1); }),
+						(s) -> { s.setEnergyRegen(s.getEnergyRegen() * 1.1f); }),
 				
-				new Powerup(0, 0, "Health ++", shipSheet.getSprite(0, 0),
-						(s) -> { s.setHealth(s.getHealth() + 1); }),
+				new Powerup(0, 0, "Fire delay --", shipSheet.getSprite(0, 0),
+						(s) -> { s.setFireDelay(s.getFireDelay() * 0.9f); }),
 		};
 		
 		EnemySpawner spawner = new EnemySpawner(new Rectangle(0, 0, 350, 200), powerups, shipSheet.getSprite(16, 13), projectileSheet.getSprite(1, 0));
@@ -263,8 +263,6 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		trailExaust.addEffector(ParticleEffector.createScaleOverLifetimeEffector(acceptAll, scaleFunction));
 		
-		trailExaust.debug = true;
-		
 		//TODO: Remove or find a good use for this particle system
 		//Background?
 		ParticleSystem s = new ParticleSystem(rect, ship.getZOrder() - 1, 200);
@@ -298,8 +296,6 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		s.setAllGranularities(64);
 		
 		s.aGranularity = 10;
-		
-		s.debug = true;
 		
 		s.addEffector(ParticleEffector.createScaleOverLifetimeEffector(acceptAll, scaleFunction.andThen((value) -> { return value * 5; })));
 		
