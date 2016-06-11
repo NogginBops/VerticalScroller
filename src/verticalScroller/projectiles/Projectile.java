@@ -88,7 +88,7 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	@Override
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.magenta);
-		g2d.drawRect((int)x, (int)y, width, height);
+		g2d.drawRect((int)x, (int)y, (int)width, (int)height);
 	}
 	
 	@Override
@@ -113,7 +113,7 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 				}
 			}
 			((Destroyable)collisionObject).damage(damage);
-			Game.gameObjectHandler.removeGameObject(this);
+			this.destroy();
 		}
 	}
 

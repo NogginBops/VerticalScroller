@@ -1,7 +1,7 @@
 package verticalScroller.destroyable;
 
 import java.awt.Color;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import game.Game;
@@ -70,7 +70,7 @@ public abstract class DestroyableSprite extends Sprite implements Destroyable {
 	 * 
 	 * @param bounds
 	 */
-	public DestroyableSprite(Rectangle bounds) {
+	public DestroyableSprite(Rectangle2D.Float bounds) {
 		super(bounds);
 	}
 

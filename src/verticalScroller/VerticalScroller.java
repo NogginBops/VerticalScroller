@@ -2,8 +2,8 @@ package verticalScroller;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +31,7 @@ import game.util.math.ColorUtils;
 import game.util.math.MathUtils;
 import kuusisto.tinysound.Music;
 import verticalScroller.UI.ShipStatusUI;
+import verticalScroller.UI.menu.options.OptionsMenu;
 import verticalScroller.enemies.EnemySpawner;
 import verticalScroller.events.PlayerDiedEvent;
 import verticalScroller.powerups.Powerup;
@@ -98,7 +99,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		settings.putSetting("Resolution", res);
 		
-		settings.putSetting("MainCamera", new Camera(new Rectangle(res), ScreenRect.FULL, new Color(80, 111, 140)));
+		settings.putSetting("MainCamera", new Camera(new Rectangle2D.Float(0, 0, res.width, res.height), ScreenRect.FULL, new Color(80, 111, 140)));
 		
 		settings.putSetting("GameInit", new VerticalScroller());
 		
@@ -109,6 +110,8 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	
 	@Override
 	public void initialize(Game game, GameSettings settings) {
+		
+		Game.log.printDebug = true;
 		
 		Game.keyHandler.addKeyBinding("PlayerUp", KeyEvent.VK_W, KeyEvent.VK_UP);
 		Game.keyHandler.addKeyBinding("PlayerDown", KeyEvent.VK_S, KeyEvent.VK_DOWN);
@@ -145,7 +148,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		ship.setMovmentBounds(camera.getBounds());
 		
-		ship.setPosition((camera.getWidth() - ship.getBounds().width)/2, camera.getHeight() - 150);
+		ship.setPosition((camera.getWidth() - ship.getWidth())/2, camera.getHeight() - 150);
 		
 		Game.gameObjectHandler.addGameObject(ship, "PlayerShip");
 		
@@ -165,17 +168,19 @@ public class VerticalScroller implements GameInitializer, EventListener {
 						(s) -> { s.setFireDelay(s.getFireDelay() * 0.9f); }),
 		};
 		
-		EnemySpawner spawner = new EnemySpawner(new Rectangle(0, 0, 350, 200), powerups, shipSheet.getSprite(16, 13), projectileSheet.getSprite(1, 0));
+		EnemySpawner spawner = new EnemySpawner(new Rectangle2D.Float(0, 0, 350, 200), powerups, shipSheet.getSprite(16, 13), projectileSheet.getSprite(1, 0));
 		
 		Game.gameObjectHandler.addGameObject(spawner);
 		
 		Game.eventMachine.addEventListener(PlayerDiedEvent.class, this);
 		
-		AudioEngine.setAudioListener(ship);
-		
-		ShipStatusUI shipUI = new ShipStatusUI(new Rectangle(0, 0, camera.getWidth(), camera.getHeight()), ship, this);
+		ShipStatusUI shipUI = new ShipStatusUI(new Rectangle2D.Float(0, 0, camera.getWidth(), camera.getHeight()), ship, this);
 		
 		Game.gameObjectHandler.addGameObject(shipUI, "ShipUI");
+		
+		OptionsMenu optionsMenu = new OptionsMenu(camera.getBounds());
+		
+		Game.gameObjectHandler.addGameObject(optionsMenu);
 		
 		/*
 		try {
@@ -192,12 +197,12 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		//TODO: Fix adhoc solution
 		try {
 			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File(".\\res\\sounds\\music\\fight_looped.wav"), Music.class, "DefaultMusicLoader", false)).result;
-			music.play(true, 0.4f);
+			music.play(true, 0.4);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		AudioEngine.setMasterVolume(0.2f);
+		AudioEngine.setMasterVolume(0.05f);
 		
 		
 		//TODO: Non gameObject updateListeners
@@ -209,7 +214,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		BiPredicate<Particle, Float> acceptAll = (particle, deltaTime) -> { return true; };
 		
-		Rectangle rect = camera.getBounds();
+		Rectangle2D.Float rect = camera.getBounds();
 		
 		rect.height += 50;
 		
@@ -240,6 +245,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		trailExaust.addEmitter(trailEmitter);
 		
+		//TODO: Refactor to lambda
 		trailExaust.addEffector(new ParticleEffector() {
 			
 			Random rand = new Random();
@@ -259,27 +265,25 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		trailExaust.addEffector(ParticleEffector.createColorOverLifetimeEffector(
 				(particle, deltaTime) -> { return particle.image == 0; },
-				(ratio) -> { return ColorUtils.Lerp(Color.white, Color.red, ratio);}));
+				(ratio) -> { return ColorUtils.Lerp(Color.white, Color.red, ratio); }));
 		
 		trailExaust.addEffector(ParticleEffector.createScaleOverLifetimeEffector(acceptAll, scaleFunction));
 		
 		//TODO: Remove or find a good use for this particle system
 		//Background?
-		ParticleSystem s = new ParticleSystem(rect, ship.getZOrder() - 1, 200);
+		ParticleSystem backgroundParticles = new ParticleSystem(rect, ship.getZOrder() - 1, 200);
 		
-		ParticleEmitter em = new ParticleEmitter(0, 0, (float) s.getBounds().getWidth(), (float)s.getBounds().getHeight(), 10f);
+		ParticleEmitter em = new ParticleEmitter(0, 0, (float) backgroundParticles.getBounds().getWidth(), (float)backgroundParticles.getBounds().getHeight(), 10f);
 		
 		em.customizer = (particle) -> {
 			particle.lifetime = particle.currLifetime = 5 + (5 * rand.nextFloat());
 			particle.dy = 10;
-			particle.color = particle.color.brighter();
-			
-			particle.color = new Color(particle.color.getRed(), particle.color.getGreen(), particle.color.getBlue(), 100);
+			particle.color = ColorUtils.createTransparent(particle.color, 100);
 		};
 		
-		s.addEmitter(em);
+		backgroundParticles.addEmitter(em);
 		
-		s.addEffector(new ParticleEffector() {
+		backgroundParticles.addEffector(new ParticleEffector() {
 			Random rand = new Random();
 			@Override
 			public void effect(Particle particle, float deltaTime) {
@@ -290,16 +294,16 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		Color transpYellow = ColorUtils.createTransparent(Color.YELLOW, 100);
 		Color transpGreen = ColorUtils.createTransparent(Color.GREEN, 50);
 		
-		s.addEffector(ParticleEffector.createColorOverLifetimeEffector(acceptAll, 
+		backgroundParticles.addEffector(ParticleEffector.createColorOverLifetimeEffector(acceptAll, 
 				(ratio) -> { return ColorUtils.Lerp(transpYellow, transpGreen, 1-ratio); }));
 		
-		s.setAllGranularities(64);
+		backgroundParticles.setAllGranularities(64);
 		
-		s.aGranularity = 10;
+		backgroundParticles.aGranularity = 10;
 		
-		s.addEffector(ParticleEffector.createScaleOverLifetimeEffector(acceptAll, scaleFunction.andThen((value) -> { return value * 5; })));
+		backgroundParticles.addEffector(ParticleEffector.createScaleOverLifetimeEffector(acceptAll, scaleFunction.andThen((value) -> { return value * 5; })));
 		
-		Game.gameObjectHandler.addGameObject(s, "System");
+		Game.gameObjectHandler.addGameObject(backgroundParticles, "System");
 		
 		try {
 			BufferedImage fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File(".\\res\\graphics\\Fire.png"), BufferedImage.class)).result;
@@ -308,7 +312,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 			trailExaust.addImage(1, fireImg);
 			fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File(".\\res\\graphics\\Heart_Alive.png"), BufferedImage.class)).result;
 			fireImg = projectileSheet.getSprite(0, 0);
-			s.addImage(0, fireImg);
+			backgroundParticles.addImage(0, fireImg);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

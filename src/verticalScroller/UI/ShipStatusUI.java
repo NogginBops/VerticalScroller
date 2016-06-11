@@ -2,7 +2,7 @@ package verticalScroller.UI;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +49,7 @@ public class ShipStatusUI extends UI implements UpdateListener, EventListener {
 	 * @param ship
 	 * @param game
 	 */
-	public ShipStatusUI(Rectangle area, Ship ship, VerticalScroller game) {
+	public ShipStatusUI(Rectangle2D.Float area, Ship ship, VerticalScroller game) {
 		super(area);
 		
 		this.ship = ship;
@@ -61,7 +61,7 @@ public class ShipStatusUI extends UI implements UpdateListener, EventListener {
 		playerScore.setPosition(10, 0);
 		
 		try {
-			Font scoreFont = IOHandler.load(new LoadRequest<Font>("scoreFont", new File(".\\res\\font\\Audiowide\\Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
+			Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", new File(".\\res\\font\\Audiowide\\Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
 			scoreFont = scoreFont.deriveFont(24f);
 			playerScore.setFont(scoreFont);
 			

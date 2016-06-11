@@ -1,10 +1,10 @@
 package verticalScroller.ships;
 
-import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	private AudioSource source;
 	
-	private Rectangle movementBounds;
+	private Rectangle2D.Float movementBounds;
 	
 	private String name;
 	
@@ -132,7 +132,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	/**
 	 * @param movmentBounds
 	 */
-	public void setMovmentBounds(Rectangle movmentBounds){
+	public void setMovmentBounds(Rectangle2D.Float movmentBounds){
 		this.movementBounds = movmentBounds;
 	}
 	
@@ -299,14 +299,6 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		updateMovement();
 		
 		isSpaceDown  = Game.keyHandler.isBound("PlayerFire", e.getKeyCode()) ? true : isSpaceDown;
-		
-		if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-			if(Game.isPaused()){
-				Game.resume();
-			}else{
-				Game.pause();
-			}
-		}
 	}
 	
 	@Override

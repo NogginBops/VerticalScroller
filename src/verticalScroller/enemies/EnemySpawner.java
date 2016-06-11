@@ -1,6 +1,6 @@
 package verticalScroller.enemies;
 
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -53,7 +53,7 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener, Eve
 	 * @param enemySprite
 	 * @param projectileSprite 
 	 */
-	public EnemySpawner(Rectangle area, Powerup[] powerups, BufferedImage enemySprite, BufferedImage projectileSprite) {
+	public EnemySpawner(Rectangle2D.Float area, Powerup[] powerups, BufferedImage enemySprite, BufferedImage projectileSprite) {
 		super(area, 5);
 		
 		this.powerups = powerups;
@@ -77,12 +77,12 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener, Eve
 			if(spawnedEnemies < maxEnemies){
 				Powerup powerup = powerups[rand.nextInt(powerups.length)];
 				
-				if(rand.nextInt(10) != 0){
+				if(rand.nextInt(1) != 0){
 					powerup = null;
 				}
 				
-				enemy = new Enemy(MathUtils.Lerp(bounds.x, bounds.x + bounds.width, rand.nextFloat()),
-						MathUtils.Lerp(bounds.y, bounds.y + bounds.height, rand.nextFloat()),
+				enemy = new Enemy(MathUtils.Lerpf(bounds.x, bounds.x + bounds.width, rand.nextFloat()),
+						MathUtils.Lerpf(bounds.y, bounds.y + bounds.height, rand.nextFloat()),
 						enemySprite, projectileSprite, powerup);
 				
 				Game.gameObjectHandler.addGameObject(enemy);
