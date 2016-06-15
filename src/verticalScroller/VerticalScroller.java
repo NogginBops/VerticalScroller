@@ -81,7 +81,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		GameSettings settings = GameSettings.DEFAULT;
+		GameSettings settings = GameSettings.createDefaultGameSettings();
 		
 		settings.putSetting("Name", "VerticalScroller");
 		
