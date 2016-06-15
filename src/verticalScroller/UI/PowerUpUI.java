@@ -55,7 +55,7 @@ public class PowerUpUI extends UI implements UpdateListener, Movable {
 		powerupText = new UILabel(getWidth()/2, getHeight()/2, powerup.getName());
 		
 		try{
-			Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", new File(".\\res\\font\\Audiowide\\Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
+			Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", new File("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
 			scoreFont = scoreFont.deriveFont(24f);
 			powerupText.setFont(scoreFont);
 		}catch(IOException e){

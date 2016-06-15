@@ -61,13 +61,13 @@ public class ShipStatusUI extends UI implements UpdateListener, EventListener {
 		playerScore.setPosition(10, 0);
 		
 		try {
-			Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", new File(".\\res\\font\\Audiowide\\Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
+			Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", new File("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
 			scoreFont = scoreFont.deriveFont(24f);
 			playerScore.setFont(scoreFont);
 			
-			heartImageAlive = IOHandler.load(new LoadRequest<BufferedImage>("HeartImageAlive", new File(".\\res\\graphics\\Heart_Alive.png"), BufferedImage.class, "DeafaultImageLoader")).result;
+			heartImageAlive = IOHandler.load(new LoadRequest<BufferedImage>("HeartImageAlive", new File("./res/graphics/Heart_Alive.png"), BufferedImage.class, "DeafaultImageLoader")).result;
 
-			heartImageDead = IOHandler.load(new LoadRequest<BufferedImage>("HeartImageDead", new File(".\\res\\graphics\\Heart_Dead.png"), BufferedImage.class, "DeafaultImageLoader")).result;
+			heartImageDead = IOHandler.load(new LoadRequest<BufferedImage>("HeartImageDead", new File("./res/graphics/Heart_Dead.png"), BufferedImage.class, "DeafaultImageLoader")).result;
 
 		} catch (IOException e) {
 			e.printStackTrace();

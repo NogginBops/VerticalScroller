@@ -105,10 +105,10 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		preloadSprites(farLeft, left, center, right, farRight);
 		
 		try {
-			fireSFX = IOHandler.load(new LoadRequest<Sound>("ship/fireSFX", new File(".\\res\\sounds\\audio\\shoot.wav"), Sound.class, "DefaultSoundLoader")).result;
-			hitSFX = IOHandler.load(new LoadRequest<Sound>("ship/hitSFX", new File(".\\res\\sounds\\audio\\explosion.wav"), Sound.class, "DefaultSoundLoader")).result;
-			deathSFX = IOHandler.load(new LoadRequest<Sound>("ship/deathSFX", new File(".\\res\\sounds\\audio\\death.wav"), Sound.class, "DefaultSoundLoader")).result;
-			spawnSFX = IOHandler.load(new LoadRequest<Sound>("ship/spawnSFX", new File(".\\res\\sounds\\audio\\spawn.wav"), Sound.class, "DefaultSoundLoader")).result;
+			fireSFX = IOHandler.load(new LoadRequest<Sound>("ship/fireSFX", new File("./res/sounds/audio/shoot.wav"), Sound.class, "DefaultSoundLoader")).result;
+			hitSFX = IOHandler.load(new LoadRequest<Sound>("ship/hitSFX", new File("./res/sounds/audio/explosion.wav"), Sound.class, "DefaultSoundLoader")).result;
+			deathSFX = IOHandler.load(new LoadRequest<Sound>("ship/deathSFX", new File("./res/sounds/audio/death.wav"), Sound.class, "DefaultSoundLoader")).result;
+			spawnSFX = IOHandler.load(new LoadRequest<Sound>("ship/spawnSFX", new File("./res/sounds/audio/spawn.wav"), Sound.class, "DefaultSoundLoader")).result;
 			source = new AudioSource(0, 0, fireSFX);
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -50,7 +50,7 @@ public class OptionsMenu extends UI implements KeyListener{
 		optionsTitle = new UILabel(10, 2, "Options");
 		
 		try{
-			Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", new File(".\\res\\font\\Audiowide\\Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
+			Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", new File("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
 			scoreFont = scoreFont.deriveFont(24f);
 			optionsTitle.setFont(scoreFont);
 		}catch(IOException e){

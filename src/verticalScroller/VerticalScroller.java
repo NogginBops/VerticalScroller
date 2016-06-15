@@ -81,15 +81,13 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.setProperty("sun.java2d.opengl", "false");
-		
 		GameSettings settings = GameSettings.DEFAULT;
 		
 		settings.putSetting("Name", "VerticalScroller");
 		
 		settings.putSetting("ScreenMode", ScreenManager.NORMAL);
 		
-		settings.putSetting("OnScreenDebug", false);
+		settings.putSetting("OnScreenDebug", true);
 		
 		settings.putSetting("DebugID", false);
 		
@@ -196,7 +194,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		//TODO: Fix adhoc solution
 		try {
-			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File(".\\res\\sounds\\music\\fight_looped.wav"), Music.class, "DefaultMusicLoader", false)).result;
+			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File("./res/sounds/music/fight_looped.wav"), Music.class, "DefaultMusicLoader", false)).result;
 			music.play(true, 0.4);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -218,7 +216,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		rect.height += 50;
 		
-		trailExaust = new ParticleSystem(rect, ship.getZOrder() - 1, 400);
+		trailExaust = new ParticleSystem(rect, ship.getZOrder() - 1, 400, null);
 		
 		trailExaust.setAllGranularities(100);
 		
@@ -271,7 +269,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		//TODO: Remove or find a good use for this particle system
 		//Background?
-		ParticleSystem backgroundParticles = new ParticleSystem(rect, ship.getZOrder() - 1, 200);
+		ParticleSystem backgroundParticles = new ParticleSystem(rect, ship.getZOrder() - 1, 200, null);
 		
 		ParticleEmitter em = new ParticleEmitter(0, 0, (float) backgroundParticles.getBounds().getWidth(), (float)backgroundParticles.getBounds().getHeight(), 10f);
 		
@@ -306,11 +304,11 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		Game.gameObjectHandler.addGameObject(backgroundParticles, "System");
 		
 		try {
-			BufferedImage fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File(".\\res\\graphics\\Fire.png"), BufferedImage.class)).result;
+			BufferedImage fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File("./res/graphics/Fire.png"), BufferedImage.class)).result;
 			trailExaust.addImage(0, fireImg);
-			fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File(".\\res\\graphics\\Fire2.png"), BufferedImage.class)).result;
+			fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File("./res/graphics/Fire2.png"), BufferedImage.class)).result;
 			trailExaust.addImage(1, fireImg);
-			fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File(".\\res\\graphics\\Heart_Alive.png"), BufferedImage.class)).result;
+			fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File("./res/graphics/Heart_Alive.png"), BufferedImage.class)).result;
 			fireImg = projectileSheet.getSprite(0, 0);
 			backgroundParticles.addImage(0, fireImg);
 		} catch (IOException e) {
