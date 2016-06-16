@@ -98,6 +98,7 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 
 	@Override
 	public Shape getCollitionShape() {
+		//TODO: Better collision shapes for projectiles
 		return bounds;
 	}
 	

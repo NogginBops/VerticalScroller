@@ -3,6 +3,7 @@ package verticalScroller;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -138,7 +139,8 @@ public class VerticalScroller implements GameInitializer, EventListener {
 				shipSheet.getSprite(4, 6, 6, 8),
 				shipSheet.getSprite(6, 6, 8, 8),
 				shipSheet.getSprite(8, 6, 10, 8),
-				projectileSheet.getSprite(3, 4));
+				projectileSheet.getSprite(3, 4),
+				new Point2D.Double(9, 9));
 		
 		Ship ship = ShipFactory.getShip("Standard");
 		

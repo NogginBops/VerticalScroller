@@ -1,5 +1,7 @@
 package verticalScroller.ships;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Ellipse2D;
@@ -29,6 +31,8 @@ import verticalScroller.projectiles.Projectile;
  *
  */
 public class Ship extends DestroyableSprite implements Collidable, KeyListener{
+	
+	//NOTE: What fields chould be final
 	
 	//FIXME: Issue where the same image gets set every frame
 	//Is this a issue now?
@@ -68,7 +72,9 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	private Shape collitionShape;
 	
-	private float radius = 4;
+	private final float diameter = 4;
+	
+	private final Point2D.Double collitionOffset;
 	
 	//TODO: Find a better way of doing this
 	private ParticleEmitter trailEmitter;
@@ -85,8 +91,9 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	 * @param projectile 
 	 * @param image
 	 * @param scale 
+	 * @param collitionOffset 
 	 */
-	public Ship(String name, float x, float y,  BufferedImage farLeft, BufferedImage left, BufferedImage center, BufferedImage right, BufferedImage farRight, BufferedImage projectile, float scale){
+	public Ship(String name, float x, float y,  BufferedImage farLeft, BufferedImage left, BufferedImage center, BufferedImage right, BufferedImage farRight, BufferedImage projectile, float scale, Point2D.Double collitionOffset){
 		super(x, y, (int)(center.getWidth() * scale), (int)(center.getHeight() * scale));
 		this.name = name;
 		this.farLeft = farLeft;
@@ -100,7 +107,9 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		
 		health = 10;
 		
-		collitionShape = new Ellipse2D.Double(bounds.getCenterX() - radius/2, bounds.getCenterY() - radius/2, radius/2, radius/2);
+		this.collitionOffset = collitionOffset;
+		
+		collitionShape = new Ellipse2D.Double((getX() + collitionOffset.getX()) * scale, (getY() + collitionOffset.getY()) * scale, diameter * scale, diameter * scale);
 		
 		preloadSprites(farLeft, left, center, right, farRight);
 		
@@ -126,7 +135,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	@Override
 	public Ship clone(){
-		return new Ship(name, x, y, farLeft, farLeft, center, right, farRight, projectile, getScale());
+		return new Ship(name, x, y, farLeft, farLeft, center, right, farRight, projectile, getScale(), collitionOffset);
 	}
 	
 	/**
@@ -266,7 +275,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	public void updateBounds() {
 		super.updateBounds();
 		
-		collitionShape = new Ellipse2D.Double(bounds.getCenterX() - radius/2, bounds.getCenterY() - radius/2, radius/2, radius/2);
+		collitionShape = new Ellipse2D.Double(getX() + (collitionOffset.getX() * getScale()), getY() + (collitionOffset.getY() * getScale()), diameter * getScale(), diameter * getScale());
 	}
 	
 	@Override

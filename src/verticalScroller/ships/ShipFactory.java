@@ -1,5 +1,6 @@
 package verticalScroller.ships;
 
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
@@ -23,9 +24,10 @@ public class ShipFactory {
 	 * @param right
 	 * @param farRight
 	 * @param projectile
+	 * @param collitionOffset 
 	 */
-	public static void createShip(String name, BufferedImage farLeft, BufferedImage left, BufferedImage center, BufferedImage right, BufferedImage farRight, BufferedImage projectile){
-		shipMap.put(name, new Ship(name, 0, 0, farLeft, left, center, right, farRight, projectile, 2));
+	public static void createShip(String name, BufferedImage farLeft, BufferedImage left, BufferedImage center, BufferedImage right, BufferedImage farRight, BufferedImage projectile, Point2D.Double collitionOffset){
+		shipMap.put(name, new Ship(name, 0, 0, farLeft, left, center, right, farRight, projectile, 2, collitionOffset));
 	}
 	
 	/**
