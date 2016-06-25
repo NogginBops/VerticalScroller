@@ -18,6 +18,7 @@ import game.UI.border.SolidBorder;
 import game.UI.elements.containers.BasicUIContainer;
 import game.UI.elements.text.UILabel;
 import game.input.keys.KeyListener;
+import game.util.math.ColorUtils;
 
 /**
  * @author Julius Häger
@@ -43,9 +44,9 @@ public class OptionsMenu extends UI implements KeyListener{
 		backgroundPanel = new BasicUIContainer(area.width * 0.1f, area.height * 0.05f, area.width * 0.8f, area.height * 0.9f);
 				//new UIRect(area.width * horizontalInsets, area.height * verticalInsets, area.width, area.height);
 		
-		backgroundPanel.setBackgroundColor(Color.DARK_GRAY);
+		backgroundPanel.setBackgroundColor(ColorUtils.createTransparent(Color.DARK_GRAY, 200));
 		
-		backgroundPanel.setBorder(new SolidBorder(10, Color.LIGHT_GRAY));
+		backgroundPanel.setBorder(new SolidBorder(10, ColorUtils.createTransparent(Color.LIGHT_GRAY, 200)));
 		
 		optionsTitle = new UILabel(10, 2, "Options");
 		

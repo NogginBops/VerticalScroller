@@ -50,8 +50,6 @@ public class PowerUpUI extends UI implements UpdateListener, Movable {
 		
 		area = new Rectangle2D.Float((float)powerup.getBounds().getCenterX() - (size), (float)powerup.getBounds().getCenterY() - (size/2), size*2, size);
 		
-		System.out.println(area);
-		
 		powerupText = new UILabel(getWidth()/2, getHeight()/2, powerup.getName());
 		
 		try{

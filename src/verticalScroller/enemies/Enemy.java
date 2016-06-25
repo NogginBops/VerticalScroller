@@ -64,9 +64,10 @@ public class Enemy extends DestroyableSprite implements Collidable{
 		if(timer <= 0){
 			timer = MathUtils.Lerpf(minTime, maxTime, rand.nextFloat());
 			
+			//The the unscaled projectile is used because its going to be scaled with a factor of 2. This might not be optimal but it works for now.
 			BasicProjectile proj = new BasicProjectile(this, projectile, 10,
-					(float)bounds.getCenterX() - projectile.getWidth()/2,
-					(float)bounds.getMaxY() - projectile.getHeight()/2,
+					(float)bounds.getCenterX() - projectile.getWidth(),
+					(float)bounds.getMaxY() - projectile.getHeight(),
 					0, 200);
 			
 			Game.gameObjectHandler.addGameObject(proj);

@@ -88,7 +88,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		settings.putSetting("ScreenMode", ScreenManager.NORMAL);
 		
-		settings.putSetting("OnScreenDebug", true);
+		settings.putSetting("OnScreenDebug", false);
 		
 		settings.putSetting("DebugID", false);
 		
@@ -134,11 +134,11 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
 		
 		ShipFactory.createShip("Standard", 
-				shipSheet.getSprite(0, 6, 2, 8),
-				shipSheet.getSprite(2, 6, 4, 8),
-				shipSheet.getSprite(4, 6, 6, 8),
-				shipSheet.getSprite(6, 6, 8, 8),
-				shipSheet.getSprite(8, 6, 10, 8),
+				shipSheet.getSprite(0, 6, 1, 7),
+				shipSheet.getSprite(2, 6, 3, 7),
+				shipSheet.getSprite(4, 6, 5, 7),
+				shipSheet.getSprite(6, 6, 7, 7),
+				shipSheet.getSprite(8, 6, 9, 7),
 				projectileSheet.getSprite(3, 4),
 				new Point2D.Double(9, 9));
 		
@@ -168,7 +168,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 						(s) -> { s.setFireDelay(s.getFireDelay() * 0.9f); }),
 		};
 		
-		EnemySpawner spawner = new EnemySpawner(new Rectangle2D.Float(0, 0, 350, 200), powerups, shipSheet.getSprite(16, 13), projectileSheet.getSprite(1, 0));
+		EnemySpawner spawner = new EnemySpawner(new Rectangle2D.Float(0, 0, camera.getWidth(), 200), powerups);
 		
 		Game.gameObjectHandler.addGameObject(spawner);
 		
@@ -278,6 +278,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		em.customizer = (particle) -> {
 			particle.lifetime = particle.currLifetime = 5 + (5 * rand.nextFloat());
 			particle.dy = 10;
+			//NOTE: This creates a lot of color objects!
 			particle.color = ColorUtils.createTransparent(particle.color, 100);
 		};
 		

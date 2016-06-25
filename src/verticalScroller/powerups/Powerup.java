@@ -41,6 +41,8 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 	
 	private float scale;
 	
+	private float lifetime = 20;
+	
 	/**
 	 * @param x
 	 * @param y
@@ -57,7 +59,17 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 		setScale(2);
 		
 		setDY(80);
+	}
+	
+	@Override
+	public void update(float deltaTime) {
+		super.update(deltaTime);
 		
+		lifetime -= deltaTime;
+		
+		if(lifetime <= 0){
+			Game.gameObjectHandler.removeGameObject(this);
+		}
 	}
 
 	@Override
