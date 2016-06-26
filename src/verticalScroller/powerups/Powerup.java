@@ -9,6 +9,7 @@ import game.Game;
 import game.gameObject.graphics.Paintable;
 import game.gameObject.physics.BasicMovable;
 import game.gameObject.physics.Collidable;
+import game.util.image.ImageUtils;
 import verticalScroller.UI.PowerUpUI;
 import verticalScroller.ships.Ship;
 
@@ -53,7 +54,7 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 	public Powerup(float x, float y, String name, BufferedImage image, Effect effect) {
 		super(x, y, image.getWidth(), image.getHeight(), 5);
 		this.name = name;
-		this.image = image;
+		this.image = ImageUtils.toSystemCompatibleImage(image);
 		this.effect = effect;
 		
 		setScale(2);
