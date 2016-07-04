@@ -45,7 +45,7 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	public Projectile(GameObject shooter, float x, float y, BufferedImage image, float lifetime) {
 		super(x, y, image.getWidth(), image.getHeight(), 5);
 		this.shooter = shooter;
-		sprite = ImageUtils.toSystemCompatibleImage(image);
+		sprite = ImageUtils.toSystemOptimizedImage(image);
 		this.lifetime = lifetime;
 		timer = 0;
 		

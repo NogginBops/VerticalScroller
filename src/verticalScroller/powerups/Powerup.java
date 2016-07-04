@@ -54,7 +54,7 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 	public Powerup(float x, float y, String name, BufferedImage image, Effect effect) {
 		super(x, y, image.getWidth(), image.getHeight(), 5);
 		this.name = name;
-		this.image = ImageUtils.toSystemCompatibleImage(image);
+		this.image = ImageUtils.toSystemOptimizedImage(image);
 		this.effect = effect;
 		
 		setScale(2);

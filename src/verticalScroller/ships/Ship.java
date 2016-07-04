@@ -123,7 +123,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	}
 	
 	
-	//TODO: Better solution
+	//	
 	/**
 	 * @param trailEmitter
 	 */

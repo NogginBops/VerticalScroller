@@ -19,13 +19,14 @@ import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.controller.event.EventListener;
 import game.controller.event.GameEvent;
+import game.debug.log.Log.LogImportance;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.UniformSpriteSheet;
 import game.gameObject.particles.Particle;
 import game.gameObject.particles.ParticleEffector;
 import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.particles.ParticleSystem;
-import game.screen.ScreenManager;
+import game.screen.Screen;
 import game.screen.ScreenRect;
 import game.sound.AudioEngine;
 import game.util.math.ColorUtils;
@@ -86,7 +87,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		settings.putSetting("Name", "VerticalScroller");
 		
-		settings.putSetting("ScreenMode", ScreenManager.NORMAL);
+		settings.putSetting("ScreenMode", Screen.Mode.NORMAL);
 		
 		settings.putSetting("OnScreenDebug", false);
 		
@@ -110,7 +111,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	@Override
 	public void initialize(Game game, GameSettings settings) {
 		
-		Game.log.printDebug = true;
+		Game.log.acceptLevel = LogImportance.DEBUG;
 		
 		Game.keyHandler.addKeyBinding("PlayerUp", KeyEvent.VK_W, KeyEvent.VK_UP);
 		Game.keyHandler.addKeyBinding("PlayerDown", KeyEvent.VK_S, KeyEvent.VK_DOWN);
