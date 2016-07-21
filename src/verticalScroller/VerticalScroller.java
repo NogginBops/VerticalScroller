@@ -111,7 +111,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	@Override
 	public void initialize(Game game, GameSettings settings) {
 		
-		Game.log.acceptLevel = LogImportance.DEBUG;
+		Game.log.setAcceptLevel(LogImportance.INFORMATIONAL);
 		
 		Game.keyHandler.addKeyBinding("PlayerUp", KeyEvent.VK_W, KeyEvent.VK_UP);
 		Game.keyHandler.addKeyBinding("PlayerDown", KeyEvent.VK_S, KeyEvent.VK_DOWN);
