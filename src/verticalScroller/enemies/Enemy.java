@@ -49,7 +49,7 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	 */
 	public Enemy(float x, float y, BufferedImage sprite, BufferedImage projectile, Powerup drop) {
 		super(x, y, sprite.getWidth(), sprite.getHeight(), sprite);
-		setScale(2);
+		setScale(1);
 		setColor(Color.WHITE);
 		this.projectile = projectile;
 		this.drop = drop;
@@ -66,8 +66,8 @@ public class Enemy extends DestroyableSprite implements Collidable{
 			
 			//The the unscaled projectile is used because its going to be scaled with a factor of 2. This might not be optimal but it works for now.
 			BasicProjectile proj = new BasicProjectile(this, projectile, 10,
-					(float)bounds.getCenterX() - projectile.getWidth(),
-					(float)bounds.getMaxY() - projectile.getHeight(),
+					(float)getBounds().getCenterX() - projectile.getWidth(),
+					(float)getBounds().getMaxY() - projectile.getHeight(),
 					0, 200);
 			
 			Game.gameObjectHandler.addGameObject(proj);
@@ -83,7 +83,7 @@ public class Enemy extends DestroyableSprite implements Collidable{
 
 	@Override
 	public Shape getCollitionShape() {
-		return bounds;
+		return shape;
 	}
 	
 	@Override
@@ -103,7 +103,7 @@ public class Enemy extends DestroyableSprite implements Collidable{
 		Game.eventMachine.fireEvent(new EnemyDestroyedEvent(this));
 		if(drop != null){
 			Powerup p = drop.clone();
-			p.setPosition(x, y);
+			p.setPosition(transform.getX(), transform.getY());
 			Game.gameObjectHandler.addGameObject(p, p.getName());
 		}
 		

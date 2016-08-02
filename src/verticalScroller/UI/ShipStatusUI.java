@@ -107,7 +107,7 @@ public class ShipStatusUI extends UI implements UpdateListener, EventListener {
 		
 		float ratio = energy/maxEnergy;
 		
-		shipEnergy.setWidth((int)(ratio * (area.width - 8) + 0.5f));
+		shipEnergy.setWidth((int)(ratio * (area.getWidth() - 8) + 0.5f));
 		
 		shipEnergy.setColor(ColorUtils.Lerp(Color.ORANGE, Color.GREEN, ratio));
 		

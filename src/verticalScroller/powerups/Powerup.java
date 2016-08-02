@@ -10,7 +10,6 @@ import game.gameObject.graphics.Paintable;
 import game.gameObject.physics.BasicMovable;
 import game.gameObject.physics.Collidable;
 import game.util.image.ImageUtils;
-import verticalScroller.UI.PowerUpUI;
 import verticalScroller.ships.Ship;
 
 /**
@@ -76,7 +75,7 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 	@Override
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.magenta);
-		g2d.fillRect((int)x, (int)y, (int)width, (int)height);
+		g2d.fillRect((int)transform.getX(), (int)transform.getY(), (int)getWidth(), (int)getHeight());
 	}
 
 	@Override
@@ -86,7 +85,7 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 
 	@Override
 	public Shape getCollitionShape() {
-		return bounds;
+		return shape;
 	}
 
 	@Override
@@ -95,7 +94,7 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 			effect.apply((Ship) collisionObject);
 			Game.gameObjectHandler.removeGameObject(this);
 			
-			Game.gameObjectHandler.addGameObject(new PowerUpUI(this));
+			//Game.gameObjectHandler.addGameObject(new PowerUpUI(this));
 		}
 	}
 	
@@ -108,7 +107,7 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 	
 	@Override
 	public Powerup clone() {
-		return new Powerup(x, y, name, image, effect);
+		return new Powerup(transform.getX(), transform.getY(), name, image, effect);
 	}
 	
 	/**
@@ -116,9 +115,9 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 	 */
 	public void setScale(float scale){
 		this.scale = scale;
-		width = (int)(image.getWidth() * scale);
-		height = (int)(image.getHeight() * scale);
-		updateBounds();
+		//transform.scale(scale, scale);
+		//width = (int)(image.getWidth() * scale);
+		//height = (int)(image.getHeight() * scale);
 	}
 	
 	/**

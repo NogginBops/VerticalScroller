@@ -61,7 +61,7 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener, Eve
 	 * @param projectileSprite 
 	 */
 	public EnemySpawner(Rectangle2D.Float area, Powerup[] powerups) {
-		super(area, 5);
+		super(area.x, area.y, area, 5);
 		
 		this.powerups = powerups;
 		
@@ -110,8 +110,8 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener, Eve
 				
 				anim.setLoop(true);
 				
-				enemy = new Enemy(MathUtils.Lerpf(bounds.x, bounds.x + bounds.width, rand.nextFloat()),
-						MathUtils.Lerpf(bounds.y, bounds.y + bounds.height, rand.nextFloat()),
+				enemy = new Enemy(MathUtils.Lerpf((float)getBounds().getX(), (float)getBounds().getX() + (float)getBounds().getWidth(), rand.nextFloat()),
+						MathUtils.Lerpf((float)getBounds().getY(), (float)getBounds().getY() + (float)getBounds().getHeight(), rand.nextFloat()),
 						anim.getCurrentImage(), projectileSheet.getSprite(1, 0), powerup);
 				
 				enemy.setAnimation(anim);

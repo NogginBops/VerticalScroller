@@ -56,10 +56,11 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	 * @param scale
 	 */
 	public void setScale(float scale){
-		this.width = (int) (sprite.getWidth() * scale);
-		this.height = (int) (sprite.getHeight() * scale);
+		//FIXME: Does scaling work with the new transforms?
+		transform.scale(scale, scale);
+		//this.width = (int) (sprite.getWidth() * scale);
+		//this.height = (int) (sprite.getHeight() * scale);
 		this.scale = scale;
-		updateBounds();
 	}
 	
 	/**
@@ -89,7 +90,7 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	@Override
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.magenta);
-		g2d.drawRect((int)x, (int)y, (int)width, (int)height);
+		g2d.drawRect((int)transform.getX(), (int)transform.getY(), (int)getWidth(), (int)getHeight());
 	}
 	
 	@Override
@@ -100,7 +101,7 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	@Override
 	public Shape getCollitionShape() {
 		//TODO: Better collision shapes for projectiles
-		return bounds;
+		return shape;
 	}
 	
 	@Override

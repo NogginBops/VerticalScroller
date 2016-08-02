@@ -36,12 +36,12 @@ public class OptionsMenu extends UI implements KeyListener{
 	 * @param area
 	 * @param elements
 	 */
-	public OptionsMenu(Rectangle2D.Float area) {
+	public OptionsMenu(Rectangle2D area) {
 		super(area);
 		
 		Game.keyHandler.addKeyBinding("Options", KeyEvent.VK_ESCAPE);
 		
-		backgroundPanel = new BasicUIContainer(area.width * 0.1f, area.height * 0.05f, area.width * 0.8f, area.height * 0.9f);
+		backgroundPanel = new BasicUIContainer((float)area.getWidth() * 0.1f, (float)area.getHeight() * 0.05f, (float)area.getWidth() * 0.8f, (float)area.getHeight() * 0.9f);
 				//new UIRect(area.width * horizontalInsets, area.height * verticalInsets, area.width, area.height);
 		
 		backgroundPanel.setBackgroundColor(ColorUtils.createTransparent(Color.DARK_GRAY, 200));

@@ -87,8 +87,7 @@ public class PowerUpUI extends UI implements UpdateListener, Movable {
 		
 		powerupText.setColor(ColorUtils.Lerp(color, transpColor, 1-(timer/startTimer)));
 		
-		area.x += dx * deltaTime;
-		area.y += dy * deltaTime;
+		setPosition(dx * deltaTime, dy * deltaTime);
 	}
 
 	@Override
@@ -108,6 +107,12 @@ public class PowerUpUI extends UI implements UpdateListener, Movable {
 
 	@Override
 	public void setDY(float dy) {
+		this.dy = dy;
+	}
+	
+	@Override
+	public void setVelocity(float dx, float dy) {
+		this.dx = dx;
 		this.dy = dy;
 	}
 	

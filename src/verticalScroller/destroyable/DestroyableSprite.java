@@ -70,8 +70,8 @@ public abstract class DestroyableSprite extends Sprite implements Destroyable {
 	 * 
 	 * @param bounds
 	 */
-	public DestroyableSprite(Rectangle2D.Float bounds) {
-		super(bounds);
+	public DestroyableSprite(float x, float y, Rectangle2D bounds) {
+		super(x, y, bounds);
 	}
 
 	@Override

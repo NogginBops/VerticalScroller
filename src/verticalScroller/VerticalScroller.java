@@ -215,11 +215,11 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		BiPredicate<Particle, Float> acceptAll = (particle, deltaTime) -> { return true; };
 		
-		Rectangle2D.Float rect = camera.getBounds();
+		Rectangle2D rect = camera.getBounds();
 		
-		rect.height += 50;
+		rect.setRect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight() + 50);
 		
-		trailExaust = new ParticleSystem(rect, ship.getZOrder() - 1, 400, null);
+		trailExaust = new ParticleSystem(0, 0, rect, ship.getZOrder() - 1, 400, null);
 		
 		trailExaust.setAllGranularities(100);
 		
@@ -231,7 +231,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 			particles[i].image = rand.nextInt(2);
 		}
 		
-		trailEmitter = new ParticleEmitter(10, 0, ship.getBounds().width - 20, 20, 400f);
+		trailEmitter = new ParticleEmitter(10, 0, (float)ship.getBounds().getWidth() - 20, 20, 400f);
 		
 		trailEmitter.customizer = (particle) -> {
 			//particle.color = Color.white;
@@ -272,7 +272,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		//TODO: Remove or find a good use for this particle system
 		//Background?
-		ParticleSystem backgroundParticles = new ParticleSystem(rect, ship.getZOrder() - 1, 200, null);
+		ParticleSystem backgroundParticles = new ParticleSystem(0, 0, rect, ship.getZOrder() - 1, 200, null);
 		
 		ParticleEmitter em = new ParticleEmitter(0, 0, (float) backgroundParticles.getBounds().getWidth(), (float)backgroundParticles.getBounds().getHeight(), 10f);
 		
@@ -344,7 +344,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 			
 			event.origin.setMovmentBounds(camera.getBounds());
 			
-			event.origin.setPosition((camera.getWidth() - event.origin.getBounds().width)/2, camera.getHeight() - 150);
+			event.origin.setPosition((camera.getWidth() - (float)event.origin.getBounds().getWidth())/2, camera.getHeight() - 150);
 			
 			event.origin.setActive(true);
 		}else{

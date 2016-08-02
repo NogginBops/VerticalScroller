@@ -47,7 +47,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	private AudioSource source;
 	
-	private Rectangle2D.Float movementBounds;
+	private Rectangle2D movementBounds;
 	
 	private String name;
 	
@@ -133,13 +133,13 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	@Override
 	public Ship clone(){
-		return new Ship(name, x, y, farLeft, farLeft, center, right, farRight, projectile, getScale(), collitionOffset);
+		return new Ship(name, transform.getX(), transform.getY(), farLeft, farLeft, center, right, farRight, projectile, getScale(), collitionOffset);
 	}
 	
 	/**
 	 * @param movmentBounds
 	 */
-	public void setMovmentBounds(Rectangle2D.Float movmentBounds){
+	public void setMovmentBounds(Rectangle2D movmentBounds){
 		this.movementBounds = movmentBounds;
 	}
 	
@@ -157,7 +157,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		trailEmitter.enabled = active;
 		
 		if(active = true && !this.isActive()){
-			source.setLocation(new Point2D.Float((float)bounds.getCenterX(), (float)bounds.getCenterY()));
+			source.setLocation(new Point2D.Float((float)getBounds().getCenterX(), (float)getBounds().getCenterY()));
 			source.setVolume(0.2f);
 			source.setSound(spawnSFX);
 			AudioEngine.playSound(source);
@@ -172,13 +172,13 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		//This should be done another way but is fine for now
 		//FIXME: setSprite
 		if(moveLeft && !moveRight){
-			if(bounds.getMinX() >= movementBounds.getMinX() + 100){
+			if(getBounds().getMinX() >= movementBounds.getMinX() + 100){
 				setSprite(left);
 			}else{
 				setSprite(farLeft);
 			}
 		}else if(!moveLeft && moveRight){
-			if(bounds.getMaxX() <= movementBounds.getMaxX() - 100){
+			if(getBounds().getMaxX() <= movementBounds.getMaxX() - 100){
 				setSprite(right);
 			}else{
 				setSprite(farRight);
@@ -191,9 +191,9 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		if(isSpaceDown){
 			if(timer > delay){
 				if(energy > 0 && !overheat){
-					BasicProjectile projectileGO = new BasicProjectile(this, projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -400);
+					BasicProjectile projectileGO = new BasicProjectile(this, projectile, 2f, transform.getX() + ((getWidth() - projectile.getWidth())/2), transform.getY(), 0, -400);
 					
-					projectileGO.setPosition(x + ((width - (float)(projectileGO.getBounds().getWidth()))/2), y);
+					projectileGO.setPosition(transform.getX() + ((getWidth() - (float)(projectileGO.getBounds().getWidth()))/2), transform.getY());
 					
 					Game.gameObjectHandler.addGameObject(projectileGO);
 					
@@ -219,40 +219,35 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		if(energy == maxEnergy && overheat){
 			overheat = false;
 		}
-		
-		updateBounds();
-		
 		//FIXME: setSprite
 		
-		if(!movementBounds.contains(bounds)){
-			if (bounds.getMinX() < movementBounds.getMinX()) {
-				x = (float) movementBounds.getMinX();
+		if(!movementBounds.contains(getBounds())){
+			if (getBounds().getMinX() < movementBounds.getMinX()) {
+				transform.setX((float) movementBounds.getMinX());
 				dx = 0;
 				
 				setSprite(farRight);
 			} 
-			else if (bounds.getMaxX() > movementBounds.getMaxX()) {
-				x = (float) movementBounds.getMaxX() - width;
+			else if (getBounds().getMaxX() > movementBounds.getMaxX()) {
+				transform.setX((float) movementBounds.getMaxX() - getWidth());
 				dx = 0;
 				
 				setSprite(farLeft);
 			}
 			
-			if (bounds.getMinY() < movementBounds.getMinY()) {
-				y = (float) movementBounds.getMinY();
+			if (getBounds().getMinY() < movementBounds.getMinY()) {
+				transform.setY((float) movementBounds.getMinY());
 				dy = 0;
 			}
-			else if (bounds.getMaxY() > movementBounds.getMaxY()) {
-				y =  (float) movementBounds.getMaxY() - height;
+			else if (getBounds().getMaxY() > movementBounds.getMaxY()) {
+				transform.setY((float) movementBounds.getMaxY() - getHeight());
 				dy = 0;
 			}
-			
-			updateBounds();
 		}
 		
 		if(trailEmitter != null){
-			trailEmitter.x = x + 10;
-			trailEmitter.y = y + height - 5;
+			trailEmitter.x = transform.getX() + 10;
+			trailEmitter.y = transform.getY() + getHeight() - 5;
 		}
 	}
 	
@@ -267,13 +262,6 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		dy += moveUp ? -movementSpeedVertical : 0;
 		dy += moveDown ? movementSpeedVertical : 0;
 		setDY(dy);
-	}
-	
-	@Override
-	public void updateBounds() {
-		super.updateBounds();
-		
-		collitionShape = new Ellipse2D.Double(getX() + (collitionOffset.getX() * getScale()), getY() + (collitionOffset.getY() * getScale()), diameter * getScale(), diameter * getScale());
 	}
 	
 	@Override
@@ -351,7 +339,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		
 		isSpaceDown = false;
 		
-		source.setLocation(new Point2D.Float((float)bounds.getCenterX(), (float)bounds.getCenterY()));
+		source.setLocation(new Point2D.Float((float)getBounds().getCenterX(), (float)getBounds().getCenterY()));
 		source.setSound(deathSFX);
 		AudioEngine.playSound(source);
 	}
