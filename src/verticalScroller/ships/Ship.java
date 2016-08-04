@@ -14,6 +14,7 @@ import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.physics.Collidable;
+import game.gameObject.transform.BoxTransform;
 import game.input.keys.KeyListener;
 import game.sound.AudioEngine;
 import game.sound.AudioSource;
@@ -30,7 +31,7 @@ import verticalScroller.projectiles.Projectile;
  */
 public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
-	//NOTE: What fields chould be final
+	//NOTE: What fields could be final
 	
 	//FIXME: Issue where the same image gets set every frame
 	//Is this a issue now?
@@ -91,8 +92,8 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	 * @param scale 
 	 * @param collitionOffset 
 	 */
-	public Ship(String name, float x, float y,  BufferedImage farLeft, BufferedImage left, BufferedImage center, BufferedImage right, BufferedImage farRight, BufferedImage projectile, float scale, Point2D.Double collitionOffset){
-		super(x, y, (int)(center.getWidth() * scale), (int)(center.getHeight() * scale));
+	public Ship(String name, float x, float y, BufferedImage farLeft, BufferedImage left, BufferedImage center, BufferedImage right, BufferedImage farRight, BufferedImage projectile, float scale, Point2D.Double collitionOffset){
+		super(x, y, (int)(center.getWidth()), (int)(center.getHeight()));
 		this.name = name;
 		this.farLeft = farLeft;
 		this.left = left;
@@ -101,13 +102,15 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		this.farRight = farRight;
 		this.projectile = projectile;
 		
+		transform = new BoxTransform(x, y, (int)center.getWidth(), center.getHeight(), (float)((collitionOffset.x + (diameter/2))/center.getWidth()), (float)((collitionOffset.y + (diameter/2))/center.getHeight()));
+		
 		setScale(scale);
 		
 		health = 10;
 		
 		this.collitionOffset = collitionOffset;
 		
-		collitionShape = new Ellipse2D.Double((getX() + collitionOffset.getX()) * scale, (getY() + collitionOffset.getY()) * scale, diameter * scale, diameter * scale);
+		collitionShape = new Ellipse2D.Double((collitionOffset.getX()), (collitionOffset.getY()), diameter, diameter);
 		
 		preloadSprites(farLeft, left, center, right, farRight);
 		
@@ -266,7 +269,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 	
 	@Override
 	public Shape getCollitionShape() {
-		return collitionShape;
+		return transform.getAffineTransform().createTransformedShape(collitionShape);
 	}
 	
 	@Override

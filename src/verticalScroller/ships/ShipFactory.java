@@ -27,7 +27,7 @@ public class ShipFactory {
 	 * @param collitionOffset 
 	 */
 	public static void createShip(String name, BufferedImage farLeft, BufferedImage left, BufferedImage center, BufferedImage right, BufferedImage farRight, BufferedImage projectile, Point2D.Double collitionOffset){
-		shipMap.put(name, new Ship(name, 0, 0, farLeft, left, center, right, farRight, projectile, 1, collitionOffset));
+		shipMap.put(name, new Ship(name, 0, 0, farLeft, left, center, right, farRight, projectile, 2, collitionOffset));
 	}
 	
 	/**

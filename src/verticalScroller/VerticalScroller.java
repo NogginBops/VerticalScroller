@@ -111,7 +111,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	@Override
 	public void initialize(Game game, GameSettings settings) {
 		
-		Game.log.acceptLevel = LogImportance.DEBUG;
+		Game.log.setAcceptLevel(LogImportance.DEBUG);
 		
 		Game.keyHandler.addKeyBinding("PlayerUp", KeyEvent.VK_W, KeyEvent.VK_UP);
 		Game.keyHandler.addKeyBinding("PlayerDown", KeyEvent.VK_S, KeyEvent.VK_DOWN);
@@ -153,6 +153,8 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		Game.gameObjectHandler.addGameObject(ship, "PlayerShip");
 		
+		ship.setDR(100);
+		
 		AudioEngine.setAudioListener(ship);
 		
 		Powerup[] powerups = new Powerup[]{ 
@@ -177,11 +179,11 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		ShipStatusUI shipUI = new ShipStatusUI(new Rectangle2D.Float(0, 0, camera.getWidth(), camera.getHeight()), ship, this);
 		
-		Game.gameObjectHandler.addGameObject(shipUI, "ShipUI");
+		//Game.gameObjectHandler.addGameObject(shipUI, "ShipUI");
 		
 		OptionsMenu optionsMenu = new OptionsMenu(camera.getBounds());
 		
-		Game.gameObjectHandler.addGameObject(optionsMenu);
+		//Game.gameObjectHandler.addGameObject(optionsMenu);
 		
 		/*
 		try {

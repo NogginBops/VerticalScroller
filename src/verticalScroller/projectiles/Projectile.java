@@ -2,7 +2,6 @@ package verticalScroller.projectiles;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.image.BufferedImage;
 
 import game.Game;
@@ -97,12 +96,8 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	public BufferedImage getImage() {
 		return sprite;
 	}
-
-	@Override
-	public Shape getCollitionShape() {
-		//TODO: Better collision shapes for projectiles
-		return shape;
-	}
+	
+	//TODO: Better collision shapes for projectiles
 	
 	@Override
 	public void hasCollided(Collidable collisionObject) {

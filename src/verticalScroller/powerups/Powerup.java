@@ -2,7 +2,6 @@ package verticalScroller.powerups;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.image.BufferedImage;
 
 import game.Game;
@@ -56,7 +55,7 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 		this.image = ImageUtils.toSystemOptimizedImage(image);
 		this.effect = effect;
 		
-		setScale(2);
+		setScale(1);
 		
 		setDY(80);
 	}
@@ -81,11 +80,6 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 	@Override
 	public BufferedImage getImage() {
 		return image;
-	}
-
-	@Override
-	public Shape getCollitionShape() {
-		return shape;
 	}
 
 	@Override
@@ -115,9 +109,7 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 	 */
 	public void setScale(float scale){
 		this.scale = scale;
-		//transform.scale(scale, scale);
-		//width = (int)(image.getWidth() * scale);
-		//height = (int)(image.getHeight() * scale);
+		transform.scale(scale, scale);
 	}
 	
 	/**

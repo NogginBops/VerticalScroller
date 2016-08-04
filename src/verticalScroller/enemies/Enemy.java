@@ -1,7 +1,6 @@
 package verticalScroller.enemies;
 
 import java.awt.Color;
-import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -49,7 +48,7 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	 */
 	public Enemy(float x, float y, BufferedImage sprite, BufferedImage projectile, Powerup drop) {
 		super(x, y, sprite.getWidth(), sprite.getHeight(), sprite);
-		setScale(1);
+		setScale(2);
 		setColor(Color.WHITE);
 		this.projectile = projectile;
 		this.drop = drop;
@@ -79,11 +78,6 @@ public class Enemy extends DestroyableSprite implements Collidable{
 			
 			
 		}
-	}
-
-	@Override
-	public Shape getCollitionShape() {
-		return shape;
 	}
 	
 	@Override
