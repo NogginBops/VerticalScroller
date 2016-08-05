@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import game.Game;
+import game.gameObject.graphics.animation.Animation;
 import game.gameObject.physics.Collidable;
 import game.util.math.ColorUtils;
 import game.util.math.MathUtils;
@@ -52,6 +53,24 @@ public class Enemy extends DestroyableSprite implements Collidable{
 		setColor(Color.WHITE);
 		this.projectile = projectile;
 		this.drop = drop;
+	}
+	
+	private Enemy(float x, float y, Animation anim, BufferedImage projectile) {
+		super(x, y, anim.getCurrentImage().getWidth(), anim.getCurrentImage().getHeight());
+	}
+	
+	/**
+	 * @param powerup
+	 */
+	public void setDrop(Powerup powerup){
+		this.drop = powerup;
+	}
+	
+	/**
+	 * @return
+	 */
+	public Powerup getDrop(){
+		return drop;
 	}
 	
 	@Override
