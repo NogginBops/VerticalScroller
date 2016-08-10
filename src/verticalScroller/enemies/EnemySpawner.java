@@ -110,15 +110,9 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener, Eve
 				
 				anim.setLoop(true);
 				
-<<<<<<< HEAD
 				enemy = new Enemy(MathUtils.Lerpf((float)getBounds().getX(), (float)getBounds().getX() + (float)getBounds().getWidth(), rand.nextFloat()),
 						MathUtils.Lerpf((float)getBounds().getY(), (float)getBounds().getY() + (float)getBounds().getHeight(), rand.nextFloat()),
 						anim.getCurrentImage(), projectileSheet.getSprite(1, 0), powerup);
-=======
-				enemy = new Enemy(MathUtils.Lerpf(bounds.x, bounds.x + bounds.width, rand.nextFloat()),
-								MathUtils.Lerpf(bounds.y, bounds.y + bounds.height, rand.nextFloat()),
-								anim.getCurrentImage(), projectileSheet.getSprite(1, 0), powerup);
->>>>>>> refs/remotes/origin/master
 				
 				enemy.setAnimation(anim);
 				

@@ -26,6 +26,7 @@ import game.gameObject.particles.Particle;
 import game.gameObject.particles.ParticleEffector;
 import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.particles.ParticleSystem;
+import game.gameObject.transform.BoxTransform;
 import game.screen.Screen;
 import game.screen.ScreenRect;
 import game.sound.AudioEngine;
@@ -111,11 +112,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	@Override
 	public void initialize(Game game, GameSettings settings) {
 		
-<<<<<<< HEAD
-		Game.log.setAcceptLevel(LogImportance.DEBUG);
-=======
 		Game.log.setAcceptLevel(LogImportance.INFORMATIONAL);
->>>>>>> refs/remotes/origin/master
 		
 		Game.keyHandler.addKeyBinding("PlayerUp", KeyEvent.VK_W, KeyEvent.VK_UP);
 		Game.keyHandler.addKeyBinding("PlayerDown", KeyEvent.VK_S, KeyEvent.VK_DOWN);
@@ -156,8 +153,6 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		ship.setPosition((camera.getWidth() - ship.getWidth())/2, camera.getHeight() - 150);
 		
 		Game.gameObjectHandler.addGameObject(ship, "PlayerShip");
-		
-		ship.setDR(100);
 		
 		AudioEngine.setAudioListener(ship);
 		
@@ -225,7 +220,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		rect.setRect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight() + 50);
 		
-		trailExaust = new ParticleSystem(0, 0, rect, ship.getZOrder() - 1, 400, null);
+		trailExaust = new ParticleSystem(new BoxTransform((float)rect.getX(), (float)rect.getY(), (float)rect.getWidth(), (float)rect.getHeight()), ship.getZOrder() - 1, 400, null);
 		
 		trailExaust.setAllGranularities(100);
 		
@@ -278,7 +273,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		//TODO: Remove or find a good use for this particle system
 		//Background?
-		ParticleSystem backgroundParticles = new ParticleSystem(0, 0, rect, ship.getZOrder() - 1, 200, null);
+		ParticleSystem backgroundParticles = new ParticleSystem(new BoxTransform((float)rect.getX(), (float)rect.getY(), (float)rect.getWidth(), (float)rect.getHeight()), ship.getZOrder() - 1, 200, null);
 		
 		ParticleEmitter em = new ParticleEmitter(0, 0, (float) backgroundParticles.getBounds().getWidth(), (float)backgroundParticles.getBounds().getHeight(), 10f);
 		
