@@ -176,11 +176,11 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		Game.eventMachine.addEventListener(PlayerDiedEvent.class, this);
 		
-		ShipStatusUI shipUI = new ShipStatusUI(new Rectangle2D.Float(0, 0, camera.getWidth(), camera.getHeight()), ship, this);
+		//ShipStatusUI shipUI = new ShipStatusUI(new Rectangle2D.Float(0, 0, camera.getWidth(), camera.getHeight()), ship, this);
 		
 		//Game.gameObjectHandler.addGameObject(shipUI, "ShipUI");
 		
-		OptionsMenu optionsMenu = new OptionsMenu(camera.getBounds());
+		//OptionsMenu optionsMenu = new OptionsMenu(camera.getBounds());
 		
 		//Game.gameObjectHandler.addGameObject(optionsMenu);
 		

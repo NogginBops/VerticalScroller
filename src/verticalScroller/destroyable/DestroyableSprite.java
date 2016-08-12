@@ -67,7 +67,8 @@ public abstract class DestroyableSprite extends Sprite implements Destroyable {
 	}
 
 	/**
-	 * 
+	 * @param x 
+	 * @param y 
 	 * @param bounds
 	 */
 	public DestroyableSprite(float x, float y, Rectangle2D bounds) {
