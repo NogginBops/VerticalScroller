@@ -61,10 +61,7 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	 * @param scale
 	 */
 	public void setScale(float scale){
-		//FIXME: Does scaling work with the new transforms?
 		transform.scale(scale, scale);
-		//this.width = (int) (sprite.getWidth() * scale);
-		//this.height = (int) (sprite.getHeight() * scale);
 		this.scale = scale;
 	}
 	

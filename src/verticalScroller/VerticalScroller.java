@@ -243,6 +243,8 @@ public class VerticalScroller implements GameInitializer {
 		trailExaust.addEmitter(trailEmitter);
 		
 		//TODO: Refactor to lambda
+		// Is this a good solution? Do ParticleAffectors have collisions?
+		
 		trailExaust.addEffector(new ParticleEffector() {
 			
 			Random rand = new Random();
