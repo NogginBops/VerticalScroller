@@ -223,13 +223,9 @@ public class VerticalScroller implements GameInitializer {
 		
 		trailExaust.setAllGranularities(100);
 		
-		Particle[] particles = trailExaust.getParticles();
-		
 		Random rand = new Random();
 		
-		for (int i = 0; i < particles.length; i++) {
-			particles[i].image = rand.nextInt(2);
-		}
+		trailExaust.customizeParticles((p) -> p.image = rand.nextInt(2));
 		
 		trailEmitter = new ParticleEmitter(10, 0, (float)ship.getBounds().getWidth() - 20, 20, 400f);
 		
