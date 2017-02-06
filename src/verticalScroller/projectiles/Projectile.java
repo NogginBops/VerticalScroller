@@ -2,6 +2,7 @@ package verticalScroller.projectiles;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.image.BufferedImage;
 
 import game.Game;
@@ -30,6 +31,8 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	
 	protected float lifetime;
 	
+	protected Shape collisionShape;
+	
 	private float timer;
 	
 	private float scale = 1;
@@ -40,12 +43,15 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	 * @param y
 	 * @param image
 	 * @param lifetime
+	 * @param collisionShape 
 	 */
-	public Projectile(GameObject shooter, float x, float y, BufferedImage image, float lifetime) {
+	public Projectile(GameObject shooter, float x, float y, BufferedImage image, float lifetime, Shape collisionShape) {
 		super(x, y, image.getWidth(), image.getHeight(), 5);
 		this.shooter = shooter;
 		sprite = ImageUtils.toSystemOptimizedImage(image);
 		this.lifetime = lifetime;
+		this.collisionShape = collisionShape;
+		
 		timer = 0;
 		
 		setScale(2);
@@ -97,7 +103,10 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 		return sprite;
 	}
 	
-	//TODO: Better collision shapes for projectiles
+	@Override
+	public Shape getCollitionShape() {
+		return transform.getAffineTransform().createTransformedShape(collisionShape);
+	}
 	
 	@Override
 	public void hasCollided(Collidable collisionObject) {

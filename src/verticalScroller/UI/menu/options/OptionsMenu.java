@@ -37,7 +37,7 @@ public class OptionsMenu extends UI implements KeyListener{
 	 * @param elements
 	 */
 	public OptionsMenu(Rectangle2D area) {
-		super(area);
+		super((float)area.getX(), (float)area.getY(), 0);
 		
 		Game.keyHandler.addKeyBinding("Options", KeyEvent.VK_ESCAPE);
 		
@@ -58,7 +58,9 @@ public class OptionsMenu extends UI implements KeyListener{
 			e.printStackTrace();
 		}
 		
-		backgroundPanel.addUIElement(optionsTitle);
+		backgroundPanel.addChild(optionsTitle);
+		
+		setMainContainer(backgroundPanel);
 	}
 
 	@Override
@@ -71,12 +73,11 @@ public class OptionsMenu extends UI implements KeyListener{
 		if(Game.keyHandler.isBound("Options", e.getKeyCode())){
 			showing = !showing;
 			
-			//TODO: Add a active or enabled system for UI
 			if(showing){
-				addUIElement(backgroundPanel);
+				backgroundPanel.setEnabled(true);
 				Game.setTimeScale(0);
 			}else{
-				removeUIElement(backgroundPanel);
+				backgroundPanel.setEnabled(false);
 				Game.setTimeScale(1);
 			}
 		}

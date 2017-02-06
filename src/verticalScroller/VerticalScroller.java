@@ -17,8 +17,6 @@ import game.GameInitializer;
 import game.GameSettings;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
-import game.controller.event.EventListener;
-import game.controller.event.GameEvent;
 import game.debug.log.Log.LogImportance;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.UniformSpriteSheet;
@@ -29,12 +27,11 @@ import game.gameObject.particles.ParticleSystem;
 import game.gameObject.transform.BoxTransform;
 import game.screen.Screen;
 import game.screen.ScreenRect;
+import game.settings.SettingsUtil;
 import game.sound.AudioEngine;
 import game.util.math.ColorUtils;
 import game.util.math.MathUtils;
 import kuusisto.tinysound.Music;
-import verticalScroller.UI.ShipStatusUI;
-import verticalScroller.UI.menu.options.OptionsMenu;
 import verticalScroller.enemies.EnemySpawner;
 import verticalScroller.events.PlayerDiedEvent;
 import verticalScroller.powerups.Powerup;
@@ -45,17 +42,13 @@ import verticalScroller.ships.ShipFactory;
  * @author Julius Häger
  *
  */
-public class VerticalScroller implements GameInitializer, EventListener {
+public class VerticalScroller implements GameInitializer {
 
 	//JAVADOC: VerticalScroller
 	
 	//TODO: Menu
 	
 	//TODO: Lives (Lose condition thing)
-	
-	//TODO: Upgrades/Powerups
-	
-	//TODO: Ship Energy
 	
 	private UniformSpriteSheet shipSheet;
 	
@@ -72,7 +65,6 @@ public class VerticalScroller implements GameInitializer, EventListener {
 	 */
 	public final int maxLives = 3;
 	
-	//TODO: Is there a better way
 	/**
 	 * 
 	 */
@@ -90,7 +82,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		settings.putSetting("ScreenMode", Screen.Mode.NORMAL);
 		
-		settings.putSetting("OnScreenDebug", false);
+		settings.putSetting("OnScreenDebug", true);
 		
 		settings.putSetting("DebugID", false);
 		
@@ -103,6 +95,8 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		settings.putSetting("MainCamera", new Camera(new Rectangle2D.Float(0, 0, res.width, res.height), ScreenRect.FULL, new Color(80, 111, 140)));
 		
 		settings.putSetting("GameInit", new VerticalScroller());
+		
+		settings = SettingsUtil.load("./res/Settings.set");
 		
 		Game game = new Game(settings);
 		
@@ -125,8 +119,8 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		BufferedImage projectileSheetImage = null;
 		
 		try {
-			shipSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/graphics/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
-			projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", new File("./res/graphics/ProjectileSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
+			shipSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/graphics/ShipsSheet.png"), BufferedImage.class, "Default Image Loader")).result;
+			projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", new File("./res/graphics/ProjectileSheet.png"), BufferedImage.class, "Default Image Loader")).result;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -170,11 +164,16 @@ public class VerticalScroller implements GameInitializer, EventListener {
 						(s) -> { s.setFireDelay(s.getFireDelay() * 0.9f); }),
 		};
 		
-		EnemySpawner spawner = new EnemySpawner(new Rectangle2D.Float(0, 0, camera.getWidth(), 200), powerups);
+		EnemySpawner spawner = new EnemySpawner(new Rectangle2D.Float(
+				0, 0, camera.getWidth(), 200), 
+				powerups,
+				settings.getSettingAs("MinSpawnTime", Float.class),
+				settings.getSettingAs("MaxSpawnTime", Float.class),
+				settings.getSettingAs("MaxEnemies", Integer.class));
 		
 		Game.gameObjectHandler.addGameObject(spawner);
 		
-		Game.eventMachine.addEventListener(PlayerDiedEvent.class, this);
+		Game.eventMachine.addEventListener(PlayerDiedEvent.class, this::OnPlayerDied);
 		
 		//ShipStatusUI shipUI = new ShipStatusUI(new Rectangle2D.Float(0, 0, camera.getWidth(), camera.getHeight()), ship, this);
 		
@@ -198,7 +197,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		//TODO: Fix adhoc solution
 		try {
-			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File("./res/sounds/music/fight_looped.wav"), Music.class, "DefaultMusicLoader", false)).result;
+			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File("./res/sounds/music/fight_looped.wav"), Music.class, "Default Music Loader", false)).result;
 			music.play(true, 0.4);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -220,7 +219,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		rect.setRect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight() + 50);
 		
-		trailExaust = new ParticleSystem(new BoxTransform((float)rect.getX(), (float)rect.getY(), (float)rect.getWidth(), (float)rect.getHeight()), ship.getZOrder() - 1, 400, null);
+		trailExaust = new ParticleSystem(new BoxTransform<>(null, (float)rect.getX(), (float)rect.getY(), (float)rect.getWidth(), (float)rect.getHeight()), ship.getZOrder() - 1, 400, null);
 		
 		trailExaust.setAllGranularities(100);
 		
@@ -273,7 +272,7 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		
 		//TODO: Remove or find a good use for this particle system
 		//Background?
-		ParticleSystem backgroundParticles = new ParticleSystem(new BoxTransform((float)rect.getX(), (float)rect.getY(), (float)rect.getWidth(), (float)rect.getHeight()), ship.getZOrder() - 1, 200, null);
+		ParticleSystem backgroundParticles = new ParticleSystem(new BoxTransform<>(null, (float)rect.getX(), (float)rect.getY(), (float)rect.getWidth(), (float)rect.getHeight()), ship.getZOrder() - 1, 200, null);
 		
 		ParticleEmitter em = new ParticleEmitter(0, 0, (float) backgroundParticles.getBounds().getWidth(), (float)backgroundParticles.getBounds().getHeight(), 10f);
 		
@@ -323,31 +322,24 @@ public class VerticalScroller implements GameInitializer, EventListener {
 		Game.gameObjectHandler.addGameObject(trailExaust, "TrailExaust");
 		
 		//TODO: Find a better way of handling particle systems
+		//NOTE: A GameSystem could be used for this like in the LunarLander project
+		//Is that a good solution?
 		ship.setTrailParticleEmitter(trailEmitter);
 	}
-
-	@Override
-	public <T extends GameEvent<?>> void eventFired(T event) {
-		
-		if(event instanceof PlayerDiedEvent){
-			OnPlayerDied((PlayerDiedEvent) event);
-		}
-		
-	}
-	
-	//TODO: Event delay or create some other kind of solution for delaying the respawn.
 	
 	private void OnPlayerDied(PlayerDiedEvent event){
 		lives--;
 		
 		if(lives > 0){
-			event.origin.setHealth(10);
+			Ship ship = (Ship) event.origin;
 			
-			event.origin.setMovmentBounds(camera.getBounds());
+			ship.setHealth(10);
 			
-			event.origin.setPosition((camera.getWidth() - (float)event.origin.getBounds().getWidth())/2, camera.getHeight() - 150);
+			ship.setMovmentBounds(camera.getBounds());
 			
-			event.origin.setActive(true);
+			ship.setPosition((camera.getWidth() - (float)ship.getBounds().getWidth())/2, camera.getHeight() - 150);
+			
+			ship.setActive(true);
 		}else{
 			//TODO: Game over
 		}

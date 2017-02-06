@@ -14,7 +14,6 @@ import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.physics.Collidable;
-import game.gameObject.transform.BoxTransform;
 import game.input.keys.KeyListener;
 import game.sound.AudioEngine;
 import game.sound.AudioSource;
@@ -102,7 +101,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		this.farRight = farRight;
 		this.projectile = projectile;
 		
-		transform = new BoxTransform(x, y, (int)center.getWidth(), center.getHeight(), (float)((collitionOffset.x + (diameter/2))/center.getWidth()), (float)((collitionOffset.y + (diameter/2))/center.getHeight()));
+		//transform = new BoxTransform(x, y, (int)center.getWidth(), center.getHeight(), (float)((collitionOffset.x + (diameter/2))/center.getWidth()), (float)((collitionOffset.y + (diameter/2))/center.getHeight()));
 		
 		setScale(scale);
 		
@@ -115,10 +114,10 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		preloadSprites(farLeft, left, center, right, farRight);
 		
 		try {
-			fireSFX = IOHandler.load(new LoadRequest<Sound>("ship/fireSFX", new File("./res/sounds/audio/shoot.wav"), Sound.class, "DefaultSoundLoader")).result;
-			hitSFX = IOHandler.load(new LoadRequest<Sound>("ship/hitSFX", new File("./res/sounds/audio/explosion.wav"), Sound.class, "DefaultSoundLoader")).result;
-			deathSFX = IOHandler.load(new LoadRequest<Sound>("ship/deathSFX", new File("./res/sounds/audio/death.wav"), Sound.class, "DefaultSoundLoader")).result;
-			spawnSFX = IOHandler.load(new LoadRequest<Sound>("ship/spawnSFX", new File("./res/sounds/audio/spawn.wav"), Sound.class, "DefaultSoundLoader")).result;
+			fireSFX = IOHandler.load(new LoadRequest<Sound>("ship/fireSFX", new File("./res/sounds/audio/shoot.wav"), Sound.class, "Default Sound Loader")).result;
+			hitSFX = IOHandler.load(new LoadRequest<Sound>("ship/hitSFX", new File("./res/sounds/audio/explosion.wav"), Sound.class, "Default Sound Loader")).result;
+			deathSFX = IOHandler.load(new LoadRequest<Sound>("ship/deathSFX", new File("./res/sounds/audio/death.wav"), Sound.class, "Default Sound Loader")).result;
+			spawnSFX = IOHandler.load(new LoadRequest<Sound>("ship/spawnSFX", new File("./res/sounds/audio/spawn.wav"), Sound.class, "Default Sound Loader")).result;
 			source = new AudioSource(0, 0, fireSFX);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -194,7 +193,7 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		if(isSpaceDown){
 			if(timer > delay){
 				if(energy > 0 && !overheat){
-					BasicProjectile projectileGO = new BasicProjectile(this, projectile, 2f, transform.getX() + ((getWidth() - projectile.getWidth())/2), transform.getY(), 0, -400);
+					BasicProjectile projectileGO = new BasicProjectile(this, projectile, new Ellipse2D.Float(2, 0, projectile.getWidth() - 5, projectile.getHeight()), 2f, transform.getX() + ((getWidth() - projectile.getWidth())/2), transform.getY(), 0, -400);
 					
 					projectileGO.setPosition(transform.getX() + ((getWidth() - (float)(projectileGO.getBounds().getWidth()))/2), transform.getY());
 					

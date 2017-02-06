@@ -1,6 +1,7 @@
 package verticalScroller.enemies;
 
 import java.awt.Color;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -83,7 +84,7 @@ public class Enemy extends DestroyableSprite implements Collidable{
 			timer = MathUtils.Lerpf(minTime, maxTime, rand.nextFloat());
 			
 			//The the unscaled projectile is used because its going to be scaled with a factor of 2. This might not be optimal but it works for now.
-			BasicProjectile proj = new BasicProjectile(this, projectile, 10,
+			BasicProjectile proj = new BasicProjectile(this, projectile, new Ellipse2D.Float(2.5f, 3, projectile.getWidth() - 5.5f, projectile.getHeight() - 7.5f), 10,
 					(float)getBounds().getCenterX() - projectile.getWidth(),
 					(float)getBounds().getMaxY() - projectile.getHeight(),
 					0, 200);

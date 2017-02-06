@@ -10,8 +10,6 @@ import java.util.Random;
 import game.Game;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
-import game.controller.event.EventListener;
-import game.controller.event.GameEvent;
 import game.gameObject.BasicGameObject;
 import game.gameObject.graphics.UniformSpriteSheet;
 import game.gameObject.graphics.animation.Animation;
@@ -24,7 +22,7 @@ import verticalScroller.powerups.Powerup;
  * @author Julius Häger
  *
  */
-public class EnemySpawner extends BasicGameObject implements UpdateListener, EventListener{
+public class EnemySpawner extends BasicGameObject implements UpdateListener {
 	
 	//JAVADOC: EnemySpawner
 	
@@ -57,13 +55,19 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener, Eve
 	/**
 	 * @param area
 	 * @param powerups 
-	 * @param enemySprite
-	 * @param projectileSprite 
+	 * @param minSpawnTime 
+	 * @param maxSpawnTime 
+	 * @param maxEnemies
 	 */
-	public EnemySpawner(Rectangle2D.Float area, Powerup[] powerups) {
+	public EnemySpawner(Rectangle2D.Float area, Powerup[] powerups, float minSpawnTime, float maxSpawnTime, int maxEnemies) {
 		super(area.x, area.y, area, 5);
 		
 		this.powerups = powerups;
+		
+		this.minSpwanTimer = minSpawnTime;
+		this.maxSpawnTimer = maxSpawnTime;
+		
+		this.maxEnemies = maxEnemies;
 		
 		BufferedImage enemySheetImage = null;
 		BufferedImage projectileSheetImage = null;
@@ -78,7 +82,7 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener, Eve
 		
 		projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
 		
-		Game.eventMachine.addEventListener(EnemyDestroyedEvent.class, this);
+		Game.eventMachine.addEventListener(EnemyDestroyedEvent.class, (event) -> { spawnedEnemies--; });
 	}
 	
 	Enemy enemy;
@@ -122,13 +126,6 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener, Eve
 				
 				spawnedEnemies++;
 			}
-		}
-	}
-
-	@Override
-	public <T extends GameEvent<?>> void eventFired(T event) {
-		if(event instanceof EnemyDestroyedEvent){
-			spawnedEnemies--;
 		}
 	}
 }

@@ -1,0 +1,42 @@
+Name: (java.lang.String) "VerticalScroller"
+
+TargetUPS: (java.lang.Integer) "500"
+TargetFPS: (java.lang.Integer) "60"
+
+OnScreenDebug: (java.lang.Boolean) "true"
+DebugID: (java.lang.Boolean) "false"
+DebugLog: (java.lang.Boolean) "false"
+
+Resolution: (java.awt.Dimension){
+	(java.lang.Integer)"400"
+	(java.lang.Integer)"600"
+}
+
+MainCamera: (game.gameObject.graphics.Camera) {
+	(java.awt.geom.Rectangle2D$Float) {
+		(java.lang.Float)"0"
+		(java.lang.Float)"0"
+		(java.lang.Float)"400"
+		(java.lang.Float)"600"
+	},
+	(game.screen.ScreenRect) {
+		(java.lang.Float)"0"
+		(java.lang.Float)"0"
+		(java.lang.Float)"1"
+		(java.lang.Float)"1"
+	}, 
+	(java.awt.Color) {
+		(java.lang.Integer)"80"
+		(java.lang.Integer)"111"
+		(java.lang.Integer)"140"
+	}
+}
+
+ScreenMode: (game.screen.Screen$Mode) "#NORMAL"
+
+GameInit: (verticalScroller.VerticalScroller) { }
+
+MinSpawnTime: (java.lang.Float) "0.9"
+MaxSpawnTime: (java.lang.Float) "2.5"
+
+MaxEnemies: (java.lang.Integer) "25"

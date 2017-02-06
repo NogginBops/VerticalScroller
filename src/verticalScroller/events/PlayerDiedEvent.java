@@ -7,16 +7,15 @@ import verticalScroller.ships.Ship;
  * @author Julius Häger
  *
  */
-public class PlayerDiedEvent extends GameEvent<Ship> {
+public class PlayerDiedEvent extends GameEvent {
 	
 	//JAVADOC: PlayerDiedEvent
-
+	
 	/**
 	 * @param origin
 	 * @param command
 	 */
 	public PlayerDiedEvent(Ship origin) {
-		super(origin, "Player died");
+		super(origin);
 	}
-	
 }
