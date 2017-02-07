@@ -55,7 +55,7 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 		this.image = ImageUtils.toSystemOptimizedImage(image);
 		this.effect = effect;
 		
-		setScale(1); //TODO: Why does this work? There could be some scaling being done outside of a transform
+		setScale(2);
 		
 		setDY(80);
 	}
@@ -109,7 +109,7 @@ public class Powerup extends BasicMovable implements Collidable, Paintable {
 	 */
 	public void setScale(float scale){
 		this.scale = scale;
-		transform.scale(scale, scale);
+		transform.setScale(scale, scale);
 	}
 	
 	/**

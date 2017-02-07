@@ -210,6 +210,7 @@ public class VerticalScroller implements GameInitializer {
 		//These should be used for things like this where we want a gameobject to relate to another
 		//gameobject but the behavior of the individual gameobjects do not support this.
 		//NOTE: There might be another solution that works better!
+		//NOTE: Is this solved by GameSystems?
 		
 		Function<Float, Float> scaleFunction = (ratio) -> { return (float) MathUtils.max(0.2f, ratio); };
 		
