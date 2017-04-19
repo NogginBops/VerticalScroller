@@ -10,7 +10,6 @@ import game.gameObject.GameObject;
 import game.gameObject.graphics.Paintable;
 import game.gameObject.physics.BasicMovable;
 import game.gameObject.physics.Collidable;
-import game.util.image.ImageUtils;
 import verticalScroller.destroyable.Destroyable;
 
 /**
@@ -48,7 +47,8 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	public Projectile(GameObject shooter, float x, float y, BufferedImage image, float lifetime, Shape collisionShape) {
 		super(x, y, image.getWidth(), image.getHeight(), 5);
 		this.shooter = shooter;
-		sprite = ImageUtils.toSystemOptimizedImage(image);
+		//sprite = ImageUtils.toSystemOptimizedImage(image);
+		sprite = image;
 		this.lifetime = lifetime;
 		this.collisionShape = collisionShape;
 		

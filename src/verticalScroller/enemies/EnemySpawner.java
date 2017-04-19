@@ -46,6 +46,8 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener {
 	
 	private UniformSpriteSheet projectileSheet;
 	
+	private Animation enemyAnimation;
+	
 	private int spawnedEnemies = 0;
 	
 	private int maxEnemies = 30;
@@ -82,6 +84,20 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener {
 		
 		projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
 		
+		enemyAnimation = new Animation(0.1f,
+						enemySheet.getSprite(0, 10, 1, 11),
+						enemySheet.getSprite(2, 10, 3, 11),
+						enemySheet.getSprite(4, 10, 5, 11),
+						enemySheet.getSprite(6, 10, 7, 11),
+						enemySheet.getSprite(8, 10, 9, 11),
+						enemySheet.getSprite(10, 10, 11, 11),
+						enemySheet.getSprite(12, 10, 13, 11),
+						enemySheet.getSprite(14, 10, 15, 11));
+		
+		enemyAnimation.setLoop(true);
+		
+		
+		
 		Game.eventMachine.addEventListener(EnemyDestroyedEvent.class, (event) -> { spawnedEnemies--; });
 	}
 	
@@ -102,23 +118,11 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener {
 					powerup = null;
 				}
 				
-				Animation anim = new Animation(0.1f,
-						enemySheet.getSprite(0, 10, 1, 11),
-						enemySheet.getSprite(2, 10, 3, 11),
-						enemySheet.getSprite(4, 10, 5, 11),
-						enemySheet.getSprite(6, 10, 7, 11),
-						enemySheet.getSprite(8, 10, 9, 11),
-						enemySheet.getSprite(10, 10, 11, 11),
-						enemySheet.getSprite(12, 10, 13, 11),
-						enemySheet.getSprite(14, 10, 15, 11));
-				
-				anim.setLoop(true);
-				
 				enemy = new Enemy(MathUtils.Lerpf((float)getBounds().getX(), (float)getBounds().getX() + (float)getBounds().getWidth(), rand.nextFloat()),
 						MathUtils.Lerpf((float)getBounds().getY(), (float)getBounds().getY() + (float)getBounds().getHeight(), rand.nextFloat()),
-						anim.getCurrentImage(), projectileSheet.getSprite(1, 0), powerup);
+						enemyAnimation.getCurrentImage(), projectileSheet.getSprite(1, 0), powerup);
 				
-				enemy.setAnimation(anim);
+				enemy.setAnimation(enemyAnimation.copy());
 				
 				enemy.getAnimation().start();
 				
