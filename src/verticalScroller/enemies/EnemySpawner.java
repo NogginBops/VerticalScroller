@@ -3,8 +3,7 @@ package verticalScroller.enemies;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Random;
 
 import game.Game;
@@ -71,14 +70,8 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener {
 		
 		this.maxEnemies = maxEnemies;
 		
-		BufferedImage enemySheetImage = null;
-		BufferedImage projectileSheetImage = null;
-		try {
-			enemySheetImage = IOHandler.load(new LoadRequest<BufferedImage>("EnemySheet", new File("./res/graphics/EnemySheet.png"), BufferedImage.class)).result;
-			projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", new File("./res/graphics/ProjectileSheet.png"), BufferedImage.class)).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		BufferedImage enemySheetImage = IOHandler.load(new LoadRequest<BufferedImage>("EnemySheet", Paths.get("sprites/EnemySheet.png"), BufferedImage.class)).result;
+		BufferedImage projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", Paths.get("sprites/ProjectileSheet.png"), BufferedImage.class)).result;
 		
 		enemySheet = new UniformSpriteSheet(enemySheetImage, 12, 14, new Color(191, 220, 191));
 		
@@ -95,8 +88,6 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener {
 						enemySheet.getSprite(14, 10, 15, 11));
 		
 		enemyAnimation.setLoop(true);
-		
-		
 		
 		Game.eventMachine.addEventListener(EnemyDestroyedEvent.class, (event) -> { spawnedEnemies--; });
 	}

@@ -6,6 +6,9 @@ TargetFPS: (java.lang.Integer) "60"
 OnScreenDebug: (java.lang.Boolean) "true"
 DebugID: (java.lang.Boolean) "false"
 DebugLog: (java.lang.Boolean) "false"
+DebugGameSystem: (java.lang.Boolean) "false"
+
+KeyBindings: (java.util.function.Consumer) "null"
 
 Resolution: (java.awt.Dimension){
 	(java.lang.Integer)"400"

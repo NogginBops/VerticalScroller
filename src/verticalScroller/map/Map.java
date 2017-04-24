@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.xml.stream.XMLEventReader;
@@ -13,8 +13,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
-import verticalScroller.map.Map;
-import verticalScroller.map.MapTile;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.gameObject.graphics.UniformSpriteSheet;
@@ -189,11 +187,7 @@ public class Map {
 									}
 									switch (event.asStartElement().getName().toString()) {
 									case "file":
-										try {
-											sheetImage = IOHandler.load(new LoadRequest<BufferedImage>("XMLParse spritesheet - " + name, new File(getStringFromElement(reader, event)), BufferedImage.class)).result;
-										} catch (IOException e) {
-											e.printStackTrace();
-										}
+										sheetImage = IOHandler.load(new LoadRequest<BufferedImage>("XMLParse spritesheet - " + name, Paths.get(getStringFromElement(reader, event)), BufferedImage.class)).result;
 										break;
 									case "tileWidth":
 										sheetTileWidth = getIntFromElement(reader, event);

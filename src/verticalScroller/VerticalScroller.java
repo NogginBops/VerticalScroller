@@ -6,8 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Random;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -113,16 +112,13 @@ public class VerticalScroller implements GameInitializer {
 		Game.keyHandler.addKeyBinding("PlayerRight", KeyEvent.VK_D, KeyEvent.VK_RIGHT);
 		Game.keyHandler.addKeyBinding("PlayerFire", KeyEvent.VK_SPACE, KeyEvent.VK_ENTER);
 		
-		BufferedImage shipSheetImage = null;
+		IOHandler.addDirectoryMapping("sprites", Paths.get(".", "res", "graphics"));
+		IOHandler.addDirectoryMapping("music", Paths.get(".", "res", "sounds", "music"));
+		IOHandler.addDirectoryMapping("sfx", Paths.get(".", "res", "sounds", "audio"));
 		
-		BufferedImage projectileSheetImage = null;
+		BufferedImage shipSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", Paths.get("sprites/ShipsSheet.png"), BufferedImage.class, "Default Image Loader")).result;
 		
-		try {
-			shipSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/graphics/ShipsSheet.png"), BufferedImage.class, "Default Image Loader")).result;
-			projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", new File("./res/graphics/ProjectileSheet.png"), BufferedImage.class, "Default Image Loader")).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		BufferedImage projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", Paths.get("sprites/ProjectileSheet.png"), BufferedImage.class, "Default Image Loader")).result;
 		
 		shipSheet = new UniformSpriteSheet(shipSheetImage, 12, 14, new Color(191, 220, 191));
 		
@@ -195,12 +191,8 @@ public class VerticalScroller implements GameInitializer {
 		//TODO: Some kind of resource handling, so that you don't have to write the full path.
 		
 		//TODO: Fix adhoc solution
-		try {
-			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File("./res/sounds/music/fight_looped.wav"), Music.class, "Default Music Loader", false)).result;
-			music.play(true, 0.4);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", Paths.get("./res/sounds/music/fight_looped.wav"), Music.class, "Default Music Loader", false)).result;
+		music.play(true, 0.4);
 		
 		AudioEngine.setMasterVolume(0.05f);
 		
@@ -305,17 +297,13 @@ public class VerticalScroller implements GameInitializer {
 		
 		Game.gameObjectHandler.addGameObject(backgroundParticles, "System");
 		
-		try {
-			BufferedImage fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File("./res/graphics/Fire.png"), BufferedImage.class)).result;
-			trailExaust.addImage(0, fireImg);
-			fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File("./res/graphics/Fire2.png"), BufferedImage.class)).result;
-			trailExaust.addImage(1, fireImg);
-			fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", new File("./res/graphics/Heart_Alive.png"), BufferedImage.class)).result;
-			fireImg = projectileSheet.getSprite(0, 0);
-			backgroundParticles.addImage(0, fireImg);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		BufferedImage fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", Paths.get("sprites/Fire.png"), BufferedImage.class)).result;
+		trailExaust.addImage(0, fireImg);
+		fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", Paths.get("sprites/Fire2.png"), BufferedImage.class)).result;
+		trailExaust.addImage(1, fireImg);
+		fireImg = IOHandler.load(new LoadRequest<BufferedImage>("fireImg", Paths.get("sprites/Heart_Alive.png"), BufferedImage.class)).result;
+		fireImg = projectileSheet.getSprite(0, 0);
+		backgroundParticles.addImage(0, fireImg);
 		
 		Game.gameObjectHandler.addGameObject(trailExaust, "TrailExaust");
 		

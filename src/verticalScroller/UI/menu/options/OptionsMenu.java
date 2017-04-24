@@ -7,8 +7,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 import game.Game;
 import game.IO.IOHandler;
@@ -50,13 +49,9 @@ public class OptionsMenu extends UI implements KeyListener{
 		
 		optionsTitle = new UILabel(10, 2, "Options");
 		
-		try{
-			Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", new File("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
-			scoreFont = scoreFont.deriveFont(24f);
-			optionsTitle.setFont(scoreFont);
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+		Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", Paths.get("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
+		scoreFont = scoreFont.deriveFont(24f);
+		optionsTitle.setFont(scoreFont);
 		
 		backgroundPanel.addChild(optionsTitle);
 		

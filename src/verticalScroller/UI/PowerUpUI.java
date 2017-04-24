@@ -4,8 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 import game.Game;
 import game.IO.IOHandler;
@@ -50,13 +49,9 @@ public class PowerUpUI extends UI implements UpdateListener {
 		
 		powerupText = new UILabel(getWidth()/2, getHeight()/2, powerup.getName());
 		
-		try{
-			Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", new File("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
-			scoreFont = scoreFont.deriveFont(24f);
-			powerupText.setFont(scoreFont);
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+		Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", Paths.get("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
+		scoreFont = scoreFont.deriveFont(24f);
+		powerupText.setFont(scoreFont);
 		
 		powerupText.setColor(color);
 		

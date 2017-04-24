@@ -6,8 +6,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 import game.Game;
 import game.IO.IOHandler;
@@ -113,19 +112,13 @@ public class Ship extends DestroyableSprite implements Collidable, KeyListener{
 		
 		preloadSprites(farLeft, left, center, right, farRight);
 		
-		try {
-			fireSFX = IOHandler.load(new LoadRequest<Sound>("ship/fireSFX", new File("./res/sounds/audio/shoot.wav"), Sound.class, "Default Sound Loader")).result;
-			hitSFX = IOHandler.load(new LoadRequest<Sound>("ship/hitSFX", new File("./res/sounds/audio/explosion.wav"), Sound.class, "Default Sound Loader")).result;
-			deathSFX = IOHandler.load(new LoadRequest<Sound>("ship/deathSFX", new File("./res/sounds/audio/death.wav"), Sound.class, "Default Sound Loader")).result;
-			spawnSFX = IOHandler.load(new LoadRequest<Sound>("ship/spawnSFX", new File("./res/sounds/audio/spawn.wav"), Sound.class, "Default Sound Loader")).result;
-			source = new AudioSource(0, 0, fireSFX);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		fireSFX = IOHandler.load(new LoadRequest<Sound>("ship/fireSFX", Paths.get("./res/sounds/audio/shoot.wav"), Sound.class, "Default Sound Loader")).result;
+		hitSFX = IOHandler.load(new LoadRequest<Sound>("ship/hitSFX", Paths.get("./res/sounds/audio/explosion.wav"), Sound.class, "Default Sound Loader")).result;
+		deathSFX = IOHandler.load(new LoadRequest<Sound>("ship/deathSFX", Paths.get("./res/sounds/audio/death.wav"), Sound.class, "Default Sound Loader")).result;
+		spawnSFX = IOHandler.load(new LoadRequest<Sound>("ship/spawnSFX", Paths.get("./res/sounds/audio/spawn.wav"), Sound.class, "Default Sound Loader")).result;
+		source = new AudioSource(0, 0, fireSFX);
 	}
-	
-	
-	//	
+		
 	/**
 	 * @param trailEmitter
 	 */
