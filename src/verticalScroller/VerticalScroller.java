@@ -1,7 +1,6 @@
 package verticalScroller;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -22,8 +21,6 @@ import game.gameObject.particles.Particle;
 import game.gameObject.particles.ParticleEffector;
 import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.particles.ParticleSystem;
-import game.screen.Screen;
-import game.screen.ScreenRect;
 import game.settings.SettingsUtil;
 import game.sound.AudioEngine;
 import game.util.function.FloatUnaryOperator;
@@ -74,27 +71,9 @@ public class VerticalScroller implements GameInitializer {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		GameSettings settings = GameSettings.createDefaultGameSettings();
+		Game.log.setLogConsumer((message) -> { System.out.printf("%-55.55s %15.15s: at %s\n", message.getMessage(), message.getImportance(), message.getLogCallSite()); });
 		
-		settings.putSetting("Name", "VerticalScroller");
-		
-		settings.putSetting("ScreenMode", Screen.Mode.NORMAL);
-		
-		settings.putSetting("OnScreenDebug", true);
-		
-		settings.putSetting("DebugID", false);
-		
-		settings.putSetting("DebugLog", false);
-		
-		Dimension res = new Dimension(400, 600);
-		
-		settings.putSetting("Resolution", res);
-		
-		settings.putSetting("MainCamera", new Camera(new Rectangle2D.Float(0, 0, res.width, res.height), ScreenRect.FULL, new Color(80, 111, 140)));
-		
-		settings.putSetting("GameInit", new VerticalScroller());
-		
-		settings = SettingsUtil.load("./res/Settings.set");
+		GameSettings settings = SettingsUtil.load("./res/Settings.set");
 		
 		Game.setup(settings);
 		
@@ -136,6 +115,8 @@ public class VerticalScroller implements GameInitializer {
 		Ship ship = ShipFactory.getShip("Standard");
 		
 		camera = settings.getSettingAs("MainCamera", Camera.class);
+		
+		Game.log.logMessage("Loaded MainCamera: " + camera);
 		
 		ship.setMovmentBounds(camera.getBounds());
 		
@@ -195,7 +176,6 @@ public class VerticalScroller implements GameInitializer {
 		music.play(true, 0.4);
 		
 		AudioEngine.setMasterVolume(0.05f);
-		
 		
 		//TODO: Non gameObject updateListeners
 		//These should be used for things like this where we want a gameobject to relate to another

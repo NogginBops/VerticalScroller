@@ -100,4 +100,17 @@ public abstract class DestroyableSprite extends Sprite implements Destroyable {
 	public void destroy() {
 		Game.gameObjectHandler.removeGameObject(this);
 	}
+	
+	@Override
+	public String[] getDebugValues() {
+		String[] superValues = super.getDebugValues();
+		String[] ownValues = new String[]{
+				"<b>Health:</b> " + health,
+		};
+		
+		String[] mergedValues = new String[superValues.length + ownValues.length];
+		System.arraycopy(superValues, 0, mergedValues, 0, superValues.length);
+		System.arraycopy(ownValues, 0, mergedValues, superValues.length, ownValues.length);
+		return mergedValues;
+	}
 }

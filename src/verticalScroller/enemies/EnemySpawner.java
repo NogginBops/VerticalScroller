@@ -53,6 +53,8 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener {
 	
 	private Powerup[] powerups;
 	
+	private Rectangle2D.Float bounds;
+	
 	/**
 	 * @param area
 	 * @param powerups 
@@ -62,6 +64,8 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener {
 	 */
 	public EnemySpawner(Rectangle2D.Float area, Powerup[] powerups, float minSpawnTime, float maxSpawnTime, int maxEnemies) {
 		super(area.x, area.y, area, 5);
+		
+		bounds = area;
 		
 		this.powerups = powerups;
 		
@@ -77,6 +81,7 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener {
 		
 		projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
 		
+		// TODO: Better way of defining animation sprites
 		enemyAnimation = new Animation(0.1f,
 						enemySheet.getSprite(0, 10, 1, 11),
 						enemySheet.getSprite(2, 10, 3, 11),
@@ -109,8 +114,8 @@ public class EnemySpawner extends BasicGameObject implements UpdateListener {
 					powerup = null;
 				}
 				
-				enemy = new Enemy(MathUtils.Lerpf((float)getBounds().getX(), (float)getBounds().getX() + (float)getBounds().getWidth(), rand.nextFloat()),
-						MathUtils.Lerpf((float)getBounds().getY(), (float)getBounds().getY() + (float)getBounds().getHeight(), rand.nextFloat()),
+				enemy = new Enemy(MathUtils.lerpf((float)getBounds().getX(), (float)getBounds().getX() + (float)getBounds().getWidth(), rand.nextFloat()),
+						MathUtils.lerpf((float)getBounds().getY(), (float)getBounds().getY() + (float)getBounds().getHeight(), rand.nextFloat()), bounds,
 						enemyAnimation.getCurrentImage(), projectileSheet.getSprite(1, 0), powerup);
 				
 				enemy.setAnimation(enemyAnimation.copy());

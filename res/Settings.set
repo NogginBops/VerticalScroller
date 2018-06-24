@@ -3,7 +3,7 @@ Name: (java.lang.String) "VerticalScroller"
 TargetUPS: (java.lang.Integer) "500"
 TargetFPS: (java.lang.Integer) "60"
 
-OnScreenDebug: (java.lang.Boolean) "true"
+OnScreenDebug: (java.lang.Boolean) "false"
 DebugID: (java.lang.Boolean) "false"
 DebugLog: (java.lang.Boolean) "false"
 DebugGameSystem: (java.lang.Boolean) "false"

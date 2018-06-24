@@ -2,6 +2,7 @@ package verticalScroller.enemies;
 
 import java.awt.Color;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -20,7 +21,7 @@ import verticalScroller.projectiles.BasicProjectile;
  * @author julius.hager
  *
  */
-public class Enemy extends DestroyableSprite implements Collidable{
+public class Enemy extends DestroyableSprite implements Collidable {
 	
 	//JAVADOC: Enemy
 	
@@ -40,16 +41,20 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	
 	private Powerup drop;
 	
+	private Rectangle2D.Float bounds;
+	
 	/**
 	 * 
 	 * @param x
 	 * @param y
+	 * @param bounds 
 	 * @param sprite
 	 * @param projectile 
 	 * @param drop 
 	 */
-	public Enemy(float x, float y, BufferedImage sprite, BufferedImage projectile, Powerup drop) {
+	public Enemy(float x, float y, Rectangle2D.Float bounds, BufferedImage sprite, BufferedImage projectile, Powerup drop) {
 		super(x, y, sprite.getWidth(), sprite.getHeight(), sprite);
+		this.bounds = bounds;
 		setScale(2);
 		setColor(Color.WHITE);
 		this.projectile = projectile;
@@ -76,12 +81,10 @@ public class Enemy extends DestroyableSprite implements Collidable{
 	
 	@Override
 	public void update(float deltaTime) {
-		super.update(deltaTime);
-		
 		timer -= deltaTime;
 		
-		if(timer <= 0){
-			timer = MathUtils.Lerpf(minTime, maxTime, rand.nextFloat());
+		if (timer <= 0) {
+			timer = MathUtils.lerpf(minTime, maxTime, rand.nextFloat());
 			
 			//The the unscaled projectile is used because its going to be scaled with a factor of 2. This might not be optimal but it works for now.
 			BasicProjectile proj = new BasicProjectile(this, projectile, new Ellipse2D.Float(2.5f, 3, projectile.getWidth() - 5.5f, projectile.getHeight() - 7.5f), 10,
@@ -95,8 +98,15 @@ public class Enemy extends DestroyableSprite implements Collidable{
 			
 			setDX(rand.nextInt(100) - 50);
 			setDY(rand.nextInt(100) - 50);
-			
-			
+		}
+		
+		super.update(deltaTime);
+		
+		setX(MathUtils.clampRect(getX(), getWidth(), (float) bounds.getMinX(), (float) bounds.getMaxX()));
+		setY(MathUtils.clampRect(getY(), getHeight(), (float) bounds.getMinY(), (float) bounds.getMaxY()));
+		
+		if (MathUtils.isOutside(getX(), (float) bounds.getMinX(), (float) bounds.getMaxX()) != 0) {
+			Game.log.logMessage("X is outside bounds! X: " + getX() + " Bounds: " + bounds);
 		}
 	}
 	
@@ -120,6 +130,17 @@ public class Enemy extends DestroyableSprite implements Collidable{
 			p.setPosition(transform.getX(), transform.getY());
 			Game.gameObjectHandler.addGameObject(p, p.getName());
 		}
-		
+	}
+	
+	@Override
+	public String[] getDebugValues() {
+		String[] superValues = super.getDebugValues();
+		String[] ownValues = new String[]{
+				"<b>Bounds:</b> " + bounds,
+		};
+		String[] mergedValues = new String[superValues.length + ownValues.length];
+		System.arraycopy(superValues, 0, mergedValues, 0, superValues.length);
+		System.arraycopy(ownValues, 0, mergedValues, superValues.length, ownValues.length);
+		return mergedValues;
 	}
 }
