@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.nio.file.Paths;
 import java.util.Random;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 
 import game.Game;
 import game.GameInitializer;
@@ -27,6 +26,7 @@ import game.screen.Screen;
 import game.screen.ScreenRect;
 import game.settings.SettingsUtil;
 import game.sound.AudioEngine;
+import game.util.function.FloatUnaryOperator;
 import game.util.math.ColorUtils;
 import game.util.math.MathUtils;
 import kuusisto.tinysound.Music;
@@ -96,13 +96,13 @@ public class VerticalScroller implements GameInitializer {
 		
 		settings = SettingsUtil.load("./res/Settings.set");
 		
-		Game game = new Game(settings);
+		Game.setup(settings);
 		
-		game.run();
+		Game.run();
 	}
 	
 	@Override
-	public void initialize(Game game, GameSettings settings) {
+	public void initialize(GameSettings settings) {
 		
 		Game.log.setAcceptLevel(LogImportance.INFORMATIONAL);
 		
@@ -203,7 +203,7 @@ public class VerticalScroller implements GameInitializer {
 		//NOTE: There might be another solution that works better!
 		//NOTE: Is this solved by GameSystems?
 		
-		Function<Float, Float> scaleFunction = (ratio) -> { return (float) MathUtils.max(0.2f, ratio); };
+		FloatUnaryOperator scaleFunction = (ratio) -> MathUtils.max(0.2f, ratio);
 		
 		BiPredicate<Particle, Float> acceptAll = (particle, deltaTime) -> { return true; };
 		
@@ -287,7 +287,7 @@ public class VerticalScroller implements GameInitializer {
 		Color transpGreen = ColorUtils.createTransparent(Color.GREEN, 50);
 		
 		backgroundParticles.addEffector(ParticleEffector.createColorOverLifetimeEffector(acceptAll, 
-				(ratio) -> { return ColorUtils.Lerp(transpYellow, transpGreen, 1-ratio); }));
+				(ratio) -> { return ColorUtils.Lerp(transpYellow, transpGreen, 1 - ratio); }));
 		
 		backgroundParticles.setAllGranularities(64);
 		
@@ -316,7 +316,7 @@ public class VerticalScroller implements GameInitializer {
 	private void OnPlayerDied(PlayerDiedEvent event){
 		lives--;
 		
-		if(lives > 0){
+		if (lives > 0) {
 			Ship ship = (Ship) event.origin;
 			
 			ship.setHealth(10);
@@ -326,7 +326,7 @@ public class VerticalScroller implements GameInitializer {
 			ship.setPosition((camera.getWidth() - (float)ship.getBounds().getWidth())/2, camera.getHeight() - 150);
 			
 			ship.setActive(true);
-		}else{
+		} else {
 			//TODO: Game over
 		}
 	}
