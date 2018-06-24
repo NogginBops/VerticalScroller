@@ -10,7 +10,6 @@ import game.gameObject.GameObject;
 import game.gameObject.graphics.Paintable;
 import game.gameObject.physics.BasicMovable;
 import game.gameObject.physics.Collidable;
-import game.util.image.ImageUtils;
 import verticalScroller.destroyable.Destroyable;
 
 /**
@@ -31,6 +30,8 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	
 	protected float lifetime;
 	
+	protected Shape collisionShape;
+	
 	private float timer;
 	
 	private float scale = 1;
@@ -41,12 +42,16 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	 * @param y
 	 * @param image
 	 * @param lifetime
+	 * @param collisionShape 
 	 */
-	public Projectile(GameObject shooter, float x, float y, BufferedImage image, float lifetime) {
+	public Projectile(GameObject shooter, float x, float y, BufferedImage image, float lifetime, Shape collisionShape) {
 		super(x, y, image.getWidth(), image.getHeight(), 5);
 		this.shooter = shooter;
-		sprite = ImageUtils.toSystemOptimizedImage(image);
+		//sprite = ImageUtils.toSystemOptimizedImage(image);
+		sprite = image;
 		this.lifetime = lifetime;
+		this.collisionShape = collisionShape;
+		
 		timer = 0;
 		
 		setScale(2);
@@ -56,10 +61,8 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	 * @param scale
 	 */
 	public void setScale(float scale){
-		this.width = (int) (sprite.getWidth() * scale);
-		this.height = (int) (sprite.getHeight() * scale);
+		transform.scale(scale, scale);
 		this.scale = scale;
-		updateBounds();
 	}
 	
 	/**
@@ -89,18 +92,17 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	@Override
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.magenta);
-		g2d.drawRect((int)x, (int)y, (int)width, (int)height);
+		g2d.drawRect((int)transform.getX(), (int)transform.getY(), (int)getWidth(), (int)getHeight());
 	}
 	
 	@Override
 	public BufferedImage getImage() {
 		return sprite;
 	}
-
+	
 	@Override
 	public Shape getCollitionShape() {
-		//TODO: Better collision shapes for projectiles
-		return bounds;
+		return transform.getAffineTransform().createTransformedShape(collisionShape);
 	}
 	
 	@Override

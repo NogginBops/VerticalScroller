@@ -67,11 +67,12 @@ public abstract class DestroyableSprite extends Sprite implements Destroyable {
 	}
 
 	/**
-	 * 
+	 * @param x 
+	 * @param y 
 	 * @param bounds
 	 */
-	public DestroyableSprite(Rectangle2D.Float bounds) {
-		super(bounds);
+	public DestroyableSprite(float x, float y, Rectangle2D bounds) {
+		super(x, y, bounds);
 	}
 
 	@Override
@@ -98,5 +99,18 @@ public abstract class DestroyableSprite extends Sprite implements Destroyable {
 	@Override
 	public void destroy() {
 		Game.gameObjectHandler.removeGameObject(this);
+	}
+	
+	@Override
+	public String[] getDebugValues() {
+		String[] superValues = super.getDebugValues();
+		String[] ownValues = new String[]{
+				"<b>Health:</b> " + health,
+		};
+		
+		String[] mergedValues = new String[superValues.length + ownValues.length];
+		System.arraycopy(superValues, 0, mergedValues, 0, superValues.length);
+		System.arraycopy(ownValues, 0, mergedValues, superValues.length, ownValues.length);
+		return mergedValues;
 	}
 }

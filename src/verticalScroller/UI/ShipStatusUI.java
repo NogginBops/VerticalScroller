@@ -4,18 +4,16 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 import game.Game;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.UI.UI;
+import game.UI.elements.containers.BasicUIContainer;
 import game.UI.elements.image.UIImage;
 import game.UI.elements.image.UIRect;
 import game.UI.elements.text.UILabel;
-import game.controller.event.EventListener;
-import game.controller.event.GameEvent;
 import game.util.UpdateListener;
 import game.util.math.ColorUtils;
 import verticalScroller.VerticalScroller;
@@ -26,7 +24,7 @@ import verticalScroller.ships.Ship;
  * @author Julius Häger
  *
  */
-public class ShipStatusUI extends UI implements UpdateListener, EventListener {
+public class ShipStatusUI extends UI implements UpdateListener {
 
 	private UILabel playerScore = new UILabel("Score: 0");
 	
@@ -50,28 +48,25 @@ public class ShipStatusUI extends UI implements UpdateListener, EventListener {
 	 * @param game
 	 */
 	public ShipStatusUI(Rectangle2D.Float area, Ship ship, VerticalScroller game) {
-		super(area);
+		super(0, 0, 0);
+		
+		mainContainer = new BasicUIContainer(area);
 		
 		this.ship = ship;
 		
 		this.game = game;
 		
-		Game.eventMachine.addEventListener(EnemyDestroyedEvent.class, this);
+		Game.eventMachine.addEventListener(EnemyDestroyedEvent.class, (event) -> { score += 100; });
 		
 		playerScore.setPosition(10, 0);
 		
-		try {
-			Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", new File("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "Default Font Loader")).result;
-			scoreFont = scoreFont.deriveFont(24f);
-			playerScore.setFont(scoreFont);
-			
-			heartImageAlive = IOHandler.load(new LoadRequest<BufferedImage>("HeartImageAlive", new File("./res/graphics/Heart_Alive.png"), BufferedImage.class, "Default Image Loader")).result;
+		Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", Paths.get("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "Default Font Loader")).result;
+		scoreFont = scoreFont.deriveFont(24f);
+		playerScore.setFont(scoreFont);
+		
+		heartImageAlive = IOHandler.load(new LoadRequest<BufferedImage>("HeartImageAlive", Paths.get("./res/graphics/Heart_Alive.png"), BufferedImage.class, "Default Image Loader")).result;
 
-			heartImageDead = IOHandler.load(new LoadRequest<BufferedImage>("HeartImageDead", new File("./res/graphics/Heart_Dead.png"), BufferedImage.class, "Defaault Image Loader")).result;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		heartImageDead = IOHandler.load(new LoadRequest<BufferedImage>("HeartImageDead", Paths.get("./res/graphics/Heart_Dead.png"), BufferedImage.class, "Defaault Image Loader")).result;
 		
 		UIHearts = new UIImage[game.maxLives];
 		
@@ -81,17 +76,17 @@ public class ShipStatusUI extends UI implements UpdateListener, EventListener {
 			UIHearts[i].setSize(32, 32);
 		}
 		
-		addUIElements(UIHearts);
+		mainContainer.addChildren(UIHearts);
 		
 		playerScore.setColor(new Color(1, 1, 1, 0.5f));
 		
-		addUIElement(playerScore);
+		mainContainer.addChild(playerScore);
 		
 		shipEnergy.setSize(area.width - 8, 15);
 		
 		shipEnergy.setPosition(4, (int) area.getMaxY() - shipEnergy.getHeight() - 5);
 		
-		addUIElement(shipEnergy);
+		mainContainer.addChild(shipEnergy);
 		
 	}
 
@@ -107,7 +102,7 @@ public class ShipStatusUI extends UI implements UpdateListener, EventListener {
 		
 		float ratio = energy/maxEnergy;
 		
-		shipEnergy.setWidth((int)(ratio * (area.width - 8) + 0.5f));
+		shipEnergy.setWidth((int)(ratio * (mainContainer.getWidth() - 8) + 0.5f));
 		
 		shipEnergy.setColor(ColorUtils.Lerp(Color.ORANGE, Color.GREEN, ratio));
 		
@@ -123,12 +118,4 @@ public class ShipStatusUI extends UI implements UpdateListener, EventListener {
 			shipEnergy.setColor(Color.RED);
 		}
 	}
-
-	@Override
-	public <T extends GameEvent<?>> void eventFired(T event) {
-		if(event instanceof EnemyDestroyedEvent){
-			score += 100;
-		}
-	}
-
 }

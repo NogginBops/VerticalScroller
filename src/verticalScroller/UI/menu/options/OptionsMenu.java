@@ -7,8 +7,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 import game.Game;
 import game.IO.IOHandler;
@@ -36,12 +35,12 @@ public class OptionsMenu extends UI implements KeyListener{
 	 * @param area
 	 * @param elements
 	 */
-	public OptionsMenu(Rectangle2D.Float area) {
-		super(area);
+	public OptionsMenu(Rectangle2D area) {
+		super((float)area.getX(), (float)area.getY(), 0);
 		
 		Game.keyHandler.addKeyBinding("Options", KeyEvent.VK_ESCAPE);
 		
-		backgroundPanel = new BasicUIContainer(area.width * 0.1f, area.height * 0.05f, area.width * 0.8f, area.height * 0.9f);
+		backgroundPanel = new BasicUIContainer((float)area.getWidth() * 0.1f, (float)area.getHeight() * 0.05f, (float)area.getWidth() * 0.8f, (float)area.getHeight() * 0.9f);
 				//new UIRect(area.width * horizontalInsets, area.height * verticalInsets, area.width, area.height);
 		
 		backgroundPanel.setBackgroundColor(ColorUtils.createTransparent(Color.DARK_GRAY, 200));
@@ -50,15 +49,13 @@ public class OptionsMenu extends UI implements KeyListener{
 		
 		optionsTitle = new UILabel(10, 2, "Options");
 		
-		try{
-			Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", new File("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
-			scoreFont = scoreFont.deriveFont(24f);
-			optionsTitle.setFont(scoreFont);
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+		Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", Paths.get("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
+		scoreFont = scoreFont.deriveFont(24f);
+		optionsTitle.setFont(scoreFont);
 		
-		backgroundPanel.addUIElement(optionsTitle);
+		backgroundPanel.addChild(optionsTitle);
+		
+		setMainContainer(backgroundPanel);
 	}
 
 	@Override
@@ -71,12 +68,11 @@ public class OptionsMenu extends UI implements KeyListener{
 		if(Game.keyHandler.isBound("Options", e.getKeyCode())){
 			showing = !showing;
 			
-			//TODO: Add a active or enabled system for UI
 			if(showing){
-				addUIElement(backgroundPanel);
+				backgroundPanel.setEnabled(true);
 				Game.setTimeScale(0);
 			}else{
-				removeUIElement(backgroundPanel);
+				backgroundPanel.setEnabled(false);
 				Game.setTimeScale(1);
 			}
 		}

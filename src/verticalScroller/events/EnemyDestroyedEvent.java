@@ -7,7 +7,7 @@ import verticalScroller.enemies.Enemy;
  * @author Julius Häger
  *
  */
-public class EnemyDestroyedEvent extends GameEvent<Enemy> {
+public class EnemyDestroyedEvent extends GameEvent {
 
 	//JAVADOC: EnemyDestroyedEvent
 	
@@ -15,7 +15,6 @@ public class EnemyDestroyedEvent extends GameEvent<Enemy> {
 	 * @param origin
 	 */
 	public EnemyDestroyedEvent(Enemy origin) {
-		super(origin, "Destroyed");
+		super(origin);
 	}
-
 }

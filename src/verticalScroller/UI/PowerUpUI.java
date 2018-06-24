@@ -4,16 +4,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 import game.Game;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.UI.UI;
+import game.UI.elements.containers.BasicUIContainer;
+import game.UI.elements.containers.UIContainer;
 import game.UI.elements.text.UILabel;
-import game.gameObject.physics.Movable;
 import game.util.UpdateListener;
 import game.util.math.ColorUtils;
 import verticalScroller.powerups.Powerup;
@@ -22,11 +21,7 @@ import verticalScroller.powerups.Powerup;
  * @author Julius Häger
  *
  */
-public class PowerUpUI extends UI implements UpdateListener, Movable {
-
-	
-	//NOTE: Should UI be movable?
-	protected float dx, dy;
+public class PowerUpUI extends UI implements UpdateListener {
 	
 	protected float size = 110;
 	
@@ -38,6 +33,8 @@ public class PowerUpUI extends UI implements UpdateListener, Movable {
 	
 	protected Color transpColor = ColorUtils.createTransparent(color, 0);
 	
+	private UIContainer container;
+	
 	private UILabel powerupText;
 	
 	private boolean positionedText = false;
@@ -46,26 +43,23 @@ public class PowerUpUI extends UI implements UpdateListener, Movable {
 	 * @param powerup
 	 */
 	public PowerUpUI(Powerup powerup) {
-		super(null);
+		super(powerup.getX(), powerup.getY(), powerup.getZOrder() + 1);
 		
-		area = new Rectangle2D.Float((float)powerup.getBounds().getCenterX() - (size), (float)powerup.getBounds().getCenterY() - (size/2), size*2, size);
+		container = new BasicUIContainer((float)powerup.getBounds().getCenterX() - (size), (float)powerup.getBounds().getCenterY() - (size/2), size*2, size);
 		
 		powerupText = new UILabel(getWidth()/2, getHeight()/2, powerup.getName());
 		
-		try{
-			Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", new File("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
-			scoreFont = scoreFont.deriveFont(24f);
-			powerupText.setFont(scoreFont);
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+		Font scoreFont = IOHandler.load(new LoadRequest<Font>("gameFont", Paths.get("./res/font/Audiowide/Audiowide-Regular.ttf"), Font.class, "DeafultFontLoader")).result;
+		scoreFont = scoreFont.deriveFont(24f);
+		powerupText.setFont(scoreFont);
 		
 		powerupText.setColor(color);
 		
-		addUIElement(powerupText);
+		container.addChild(powerupText);
+		
+		setMainContainer(container);
 		
 		setDY(-25);
-		
 	}
 	
 	@Override
@@ -87,28 +81,6 @@ public class PowerUpUI extends UI implements UpdateListener, Movable {
 		
 		powerupText.setColor(ColorUtils.Lerp(color, transpColor, 1-(timer/startTimer)));
 		
-		area.x += dx * deltaTime;
-		area.y += dy * deltaTime;
+		setPosition(getDX() * deltaTime, getDY() * deltaTime);
 	}
-
-	@Override
-	public float getDX() {
-		return dx;
-	}
-
-	@Override
-	public float getDY() {
-		return dy;
-	}
-
-	@Override
-	public void setDX(float dx) {
-		this.dx = dx;
-	}
-
-	@Override
-	public void setDY(float dy) {
-		this.dy = dy;
-	}
-	
 }
